@@ -24,6 +24,9 @@ iconv.utf8.decode(Uint8Array.fromHex("f09f9885")); // "😅"
 
 iconv.ascii.encode("😅").toHex(); // "3f3f"
 iconv.ascii.decode(Uint8Array.fromHex("3f3f")); // "??"
+
+iconv.utf16.encode("😅", { endianness: "little-endian" }).toHex(); // "3dd805de"
+iconv.utf16.decode(Uint8Array.fromHex("3dd805de")); // "😅"
 ```
 
 ## Supported encodings
@@ -57,6 +60,9 @@ iconv.ascii.decode(Uint8Array.fromHex("3f3f")); // "??"
 - windows-1257
 - windows-1258
 - x-mac-cyrillic
+- utf-16
+- utf-16be
+- utf-16le
 
 ## License
 

@@ -29,6 +29,10 @@ import * as windows_1258 from "./codecs/single-byte/windows-1258.js";
 import * as x_mac_cyrillic from "./codecs/single-byte/x-mac-cyrillic.js";
 // UTF-8
 import * as utf_8 from "./codecs/utf-8.js";
+// UTF-16
+import * as utf_16 from "./codecs/utf-16.js";
+import * as utf_16be from "./codecs/utf-16be.js";
+import * as utf_16le from "./codecs/utf-16le.js";
 
 // Aliases from https://encoding.spec.whatwg.org/#names-and-labels
 export {
@@ -39,6 +43,19 @@ export {
   utf_8 as unicode20utf8,
   utf_8 as utf8,
   utf_8 as x_unicode20utf8,
+
+  // UTF-16
+  utf_16,
+  utf_16 as utf16,
+  utf_16 as unicode,
+  // UTF-16BE
+  utf_16be,
+  utf_16be as unicodefffe,
+  utf_16be as csunicode,
+  utf_16be as iso_10646_ucs_2,
+  // UTF-16LE
+  utf_16le,
+  utf_16le as unicodefeff,
 
   // Single-byte encodings
   ibm866,
