@@ -12,7 +12,7 @@ const decode = (input: BufferSource, decodeOptions?: DecodeOptions): string => {
 
   return getCachedTextDecoder("ibm866", {
     fatal: false,
-    ignoreBOM: stripBOM,
+    ignoreBOM: !stripBOM,
   }).decode(input);
 };
 

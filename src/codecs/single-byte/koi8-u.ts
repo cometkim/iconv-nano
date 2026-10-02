@@ -12,7 +12,7 @@ const decode = (input: BufferSource, decodeOptions?: DecodeOptions): string => {
 
   return getCachedTextDecoder("koi8-u", {
     fatal: false,
-    ignoreBOM: stripBOM,
+    ignoreBOM: !stripBOM,
   }).decode(input);
 };
 

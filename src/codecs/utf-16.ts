@@ -42,7 +42,7 @@ const decode = (
 
   return getCachedTextDecoder(
     endianness === "little-endian" ? "utf-16le" : "utf-16be",
-    { fatal: false, ignoreBOM: stripBOM },
+    { fatal: false, ignoreBOM: !stripBOM },
   ).decode(input);
 };
 

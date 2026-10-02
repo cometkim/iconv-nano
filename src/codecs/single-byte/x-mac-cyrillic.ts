@@ -12,7 +12,7 @@ const decode = (input: BufferSource, decodeOptions?: DecodeOptions): string => {
 
   return getCachedTextDecoder("x-mac-cyrillic", {
     fatal: false,
-    ignoreBOM: stripBOM,
+    ignoreBOM: !stripBOM,
   }).decode(input);
 };
 

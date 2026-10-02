@@ -12,7 +12,7 @@ const decode = (input: BufferSource, decodeOptions?: DecodeOptions): string => {
 
   return getCachedTextDecoder("windows-874", {
     fatal: false,
-    ignoreBOM: stripBOM,
+    ignoreBOM: !stripBOM,
   }).decode(input);
 };
 

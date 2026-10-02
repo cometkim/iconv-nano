@@ -12,7 +12,7 @@ const decode = (input: BufferSource, decodeOptions?: DecodeOptions): string => {
 
   return getCachedTextDecoder("macintosh", {
     fatal: false,
-    ignoreBOM: stripBOM,
+    ignoreBOM: !stripBOM,
   }).decode(input);
 };
 
