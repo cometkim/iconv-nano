@@ -6,7 +6,7 @@ import * as iso_8859_4 from "./codecs/single-byte/iso-8859-4.js";
 import * as iso_8859_5 from "./codecs/single-byte/iso-8859-5.js";
 import * as iso_8859_6 from "./codecs/single-byte/iso-8859-6.js";
 import * as iso_8859_7 from "./codecs/single-byte/iso-8859-7.js";
-import * as iso_8859_8i from "./codecs/single-byte/iso-8859-8-i.js";
+import * as iso_8859_8_i from "./codecs/single-byte/iso-8859-8-i.js";
 import * as iso_8859_8 from "./codecs/single-byte/iso-8859-8.js";
 import * as iso_8859_10 from "./codecs/single-byte/iso-8859-10.js";
 import * as iso_8859_13 from "./codecs/single-byte/iso-8859-13.js";
@@ -127,10 +127,9 @@ export {
   iso_8859_8 as iso88598,
   iso_8859_8 as iso_8859_8_1988,
   iso_8859_8 as visual,
-  iso_8859_8i,
-  iso_8859_8i as csiso88598i,
-  iso_8859_8i as iso_8859_8_i,
-  iso_8859_8i as logical,
+  iso_8859_8_i,
+  iso_8859_8_i as csiso88598i,
+  iso_8859_8_i as logical,
   iso_8859_10,
   iso_8859_10 as csisolatin6,
   iso_8859_10 as iso_ir_157,
