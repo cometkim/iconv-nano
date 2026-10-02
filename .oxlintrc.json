@@ -7,13 +7,16 @@
     "eslint",
     "import",
     "node",
-    "promise"
+    "promise",
+    "vitest"
   ],
   "categories": {
     "correctness": "error",
     "suspicious": "warn"
   },
-  "rules": {},
+  "rules": {
+    "vitest/consistent-test-it": "warn"
+  },
   "env": {
     "builtin": true
   },
