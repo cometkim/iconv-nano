@@ -10,6 +10,7 @@ coverage
 
 # Build Outputs
 dist/
+temp-encodings/
 
 # Logs
 logs

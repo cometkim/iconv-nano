@@ -3,6 +3,10 @@
     "source.fixAll.oxc": "explicit"
   },
   "editor.defaultFormatter": "oxc.oxc-vscode",
+  "files.associations": {
+    // Using json file extension because of https://github.com/microsoft/TypeScript/issues/54137
+    "**/encodings/*.json": "jsonc"
+  },
   "js/ts.tsdk.path": "./node_modules/typescript/lib",
   "js/ts.tsdk.promptToUseWorkspaceVersion": true, // Use the workspace TypeScript version
 
