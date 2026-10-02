@@ -51,10 +51,11 @@ export {
   // UTF-16BE
   utf_16be,
   utf_16be as unicodefffe,
-  utf_16be as csunicode,
-  utf_16be as iso_10646_ucs_2,
   // UTF-16LE
   utf_16le,
+  utf_16le as csunicode,
+  utf_16le as iso_10646_ucs_2,
+  utf_16le as ucs_2,
   utf_16le as unicodefeff,
 
   // Single-byte encodings
