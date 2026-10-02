@@ -21,11 +21,42 @@ import * as iconv from "iconv-nano";
 
 iconv.utf8.encode("😅").toHex(); // "f09f9885"
 iconv.utf8.decode(Uint8Array.fromHex("f09f9885")); // "😅"
+
+iconv.ascii.encode("😅").toHex(); // "3f3f"
+iconv.ascii.decode(Uint8Array.fromHex("3f3f")); // "??"
 ```
 
 ## Supported encodings
 
 - UTF-8
+- IBM866
+- ISO-8859-2
+- ISO-8859-3
+- ISO-8859-4
+- ISO-8859-5
+- ISO-8859-6
+- ISO-8859-7
+- ISO-8859-8
+- ISO-8859-8-1
+- ISO-8859-10
+- ISO-8859-13
+- ISO-8859-14
+- ISO-8859-15
+- ISO-8859-16
+- KOI8-R
+- KOI8-U
+- macintosh
+- windows-874
+- windows-1250
+- windows-1251
+- windows-1252
+- windows-1253
+- windows-1254
+- windows-1255
+- windows-1256
+- windows-1257
+- windows-1258
+- x-mac-cyrillic
 
 ## License
 
