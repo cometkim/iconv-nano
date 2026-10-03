@@ -29,6 +29,8 @@ import * as windows_1256 from "./codecs/single-byte/windows-1256.js";
 import * as windows_1257 from "./codecs/single-byte/windows-1257.js";
 import * as windows_1258 from "./codecs/single-byte/windows-1258.js";
 import * as x_mac_cyrillic from "./codecs/single-byte/x-mac-cyrillic.js";
+// Legacy multi-byte Chinese (traditional) encodings
+import * as big5 from "./codecs/big5.js";
 // Legacy multi-byte Japanese encodings
 import * as shift_jis from "./codecs/shift_jis.js";
 // Legacy multi-byte Korean encodings
@@ -205,6 +207,13 @@ export {
   windows_1258 as x_cp1258,
   x_mac_cyrillic,
   x_mac_cyrillic as x_mac_ukrainian,
+
+  // Legacy multi-byte Chinese (traditional) encodings
+  big5,
+  big5 as big5_hkscs,
+  big5 as cn_big5,
+  big5 as csbig5,
+  big5 as x_x_big5,
 
   // Legacy multi-byte Japanese encodings
   shift_jis,
