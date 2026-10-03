@@ -29,35 +29,35 @@ import * as windows_1257 from "./windows-1257.js";
 import * as windows_1258 from "./windows-1258.js";
 import * as x_mac_cyrillic from "./x-mac-cyrillic.js";
 
-const CODECS = {
-  ibm866,
-  iso_8859_2,
-  iso_8859_3,
-  iso_8859_4,
-  iso_8859_5,
-  iso_8859_6,
-  iso_8859_7,
-  iso_8859_8_i,
-  iso_8859_8,
-  iso_8859_10,
-  iso_8859_13,
-  iso_8859_14,
-  iso_8859_15,
-  iso_8859_16,
-  koi8_r,
-  koi8_u,
+const SINGLE_BYTE_CODECS = {
+  IBM866: ibm866,
+  "ISO-8859-2": iso_8859_2,
+  "ISO-8859-3": iso_8859_3,
+  "ISO-8859-4": iso_8859_4,
+  "ISO-8859-5": iso_8859_5,
+  "ISO-8859-6": iso_8859_6,
+  "ISO-8859-7": iso_8859_7,
+  "ISO-8859-8": iso_8859_8,
+  "ISO-8859-8-I": iso_8859_8_i,
+  "ISO-8859-10": iso_8859_10,
+  "ISO-8859-13": iso_8859_13,
+  "ISO-8859-14": iso_8859_14,
+  "ISO-8859-15": iso_8859_15,
+  "ISO-8859-16": iso_8859_16,
+  "KOI8-R": koi8_r,
+  "KOI8-U": koi8_u,
   macintosh,
-  windows_874,
-  windows_1250,
-  windows_1251,
-  windows_1252,
-  windows_1253,
-  windows_1254,
-  windows_1255,
-  windows_1256,
-  windows_1257,
-  windows_1258,
-  x_mac_cyrillic,
+  "windows-874": windows_874,
+  "windows-1250": windows_1250,
+  "windows-1251": windows_1251,
+  "windows-1252": windows_1252,
+  "windows-1253": windows_1253,
+  "windows-1254": windows_1254,
+  "windows-1255": windows_1255,
+  "windows-1256": windows_1256,
+  "windows-1257": windows_1257,
+  "windows-1258": windows_1258,
+  "x-mac-cyrillic": x_mac_cyrillic,
 };
 
 describe("Legacy single-byte encodings", () => {
@@ -68,9 +68,8 @@ describe("Legacy single-byte encodings", () => {
    * logic is in {@link encodeSingleByteEncoding}, so this is effectively a
    * sanity check that verifies these codec indexes are correct.
    */
-  it.for(Object.entries(CODECS))(
-    "%s codec survives roundtrip conversion",
-    ([, codec]) => {
+  describe.for(Object.entries(SINGLE_BYTE_CODECS))("%s", ([, codec]) => {
+    it("survives roundtrip conversion", () => {
       const bytes = new Uint8Array(Array.from({ length: 256 }, (_, i) => i));
       // TextDecoder replaces invalid characters with the unicode replacement
       // character. Since these are all ASCII-compatible single-byte encodings,
@@ -80,6 +79,6 @@ describe("Legacy single-byte encodings", () => {
       const input = codec.decode(bytes).replaceAll("\uFFFD", "?");
       const encodedInput = codec.encode(input);
       expect(codec.decode(encodedInput)).toBe(input);
-    },
-  );
+    });
+  });
 });
