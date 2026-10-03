@@ -45,7 +45,7 @@ const getGb18030RangesPointer = (codePoint: number) => {
   }
 
   if (rangeIndex === undefined) {
-    throw new Error("dfsifkj");
+    throw new Error("Somehow, no range was found");
   }
 
   const [pointerOffset, codePointOffset] = gb18030_ranges[rangeIndex]!;
@@ -67,7 +67,8 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
       buf[byteOffset] = codePoint;
       byteOffset++;
     } else if (codePoint === 0xe5e5) {
-      continue;
+      buf[byteOffset] = 0x3f;
+      byteOffset++;
     } else if (isGBK && codePoint === 0x20ac) {
       buf[byteOffset] = 0x80;
       byteOffset++;
@@ -86,9 +87,12 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
         buf[byteOffset] = leading;
         buf[byteOffset + 1] = trailing + offset;
         byteOffset += 2;
+        continue;
       }
 
       if (isGBK) {
+        buf[byteOffset] = 0x3f;
+        byteOffset += 1;
         continue;
       }
 

@@ -6,6 +6,7 @@ import * as iconv from "./index";
 
 const CODECS = [
   { name: "gb18030", codec: iconv.gb18030, encoding: gb18030_encoding },
+  { name: "gbk", codec: iconv.gbk, encoding: gb18030_encoding },
   { name: "euc-jp", codec: iconv.euc_jp, encoding: jis0208_encoding },
 ];
 
