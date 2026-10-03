@@ -66,6 +66,7 @@ iconv.utf16.decode(Uint8Array.fromHex("3dd805de")); // "😅"
 - Shift_JIS
 - EUC-KR
 - Big5
+- gb18030
 
 ## License
 

@@ -29,6 +29,8 @@ import * as windows_1256 from "./codecs/single-byte/windows-1256.js";
 import * as windows_1257 from "./codecs/single-byte/windows-1257.js";
 import * as windows_1258 from "./codecs/single-byte/windows-1258.js";
 import * as x_mac_cyrillic from "./codecs/single-byte/x-mac-cyrillic.js";
+// Legacy multi-byte Chinese (simplified) encodings
+import * as gb18030 from "./codecs/gb18030.js";
 // Legacy multi-byte Chinese (traditional) encodings
 import * as big5 from "./codecs/big5.js";
 // Legacy multi-byte Japanese encodings
@@ -207,6 +209,9 @@ export {
   windows_1258 as x_cp1258,
   x_mac_cyrillic,
   x_mac_cyrillic as x_mac_ukrainian,
+
+  // Legacy multi-byte Chinese (simplified) encodings
+  gb18030,
 
   // Legacy multi-byte Chinese (traditional) encodings
   big5,
