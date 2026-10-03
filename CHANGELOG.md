@@ -1,5 +1,27 @@
 # iconv-nano
 
+## 0.0.2
+
+### Patch Changes
+
+- [`4c15f11`](https://github.com/jeremy-code/iconv-nano/commit/4c15f110d9ceb716487097acfc0622aa09f6cb95) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: add big5 codec
+
+- [`7d56910`](https://github.com/jeremy-code/iconv-nano/commit/7d56910e40ba2c11dc9e54cfdd6ce325e3bb53ff) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: add shift_jis codec
+
+- [`22db694`](https://github.com/jeremy-code/iconv-nano/commit/22db69469b06eb253bdba3d0ffab9c39bff0a132) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: use unified Encoder/Decoder interfaces for codecs
+
+- [`77a72a3`](https://github.com/jeremy-code/iconv-nano/commit/77a72a3fbdf4472ced5552d861583f531d96628b) Thanks [@jeremy-code](https://github.com/jeremy-code)! - fix: correct encoding of characters with multiple UTF-16 code units
+
+- [`9f90b86`](https://github.com/jeremy-code/iconv-nano/commit/9f90b86eeef3142178c95647621406b975330af1) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: update generate-encodings.ts script to parse indexes from whatwg/encoding
+
+  - Update generate-encodings.ts script to parse indexes from whatwg/encoding GitHub
+  - Fix big5.json and gb18030-ranges.json to match whatwg/encoding indexes
+  - Fix parsing with "first key wins" rule (it only mattered for shift_jis)
+
+- [`9fddcbd`](https://github.com/jeremy-code/iconv-nano/commit/9fddcbd7c7b7879755757aad37d0f48a1f27d1c5) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: add euc-kr codec
+
+- [`b2e0c4c`](https://github.com/jeremy-code/iconv-nano/commit/b2e0c4ce6576a2b30503efcad8a052021bb7f03e) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: add gb18030 codec
+
 ## 0.0.1
 
 ### Patch Changes
