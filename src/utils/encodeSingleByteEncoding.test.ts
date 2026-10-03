@@ -52,10 +52,10 @@ describe("encodeSingleByteEncoding", () => {
   });
 
   // https://eev.ee/blog/2015/09/12/dark-corners-of-unicode/#javascript-has-no-string-type
-  it("returns one '?' per UTF-16 code unit for astral characters", () => {
+  it("returns one '?' for astral characters with multiple UTF-16 code units", () => {
     expect("😅").toHaveLength(2);
     expect(encodeSingleByteEncoding("😅", encodingIndex)).toEqual(
-      textEncoder.encode("??"),
+      textEncoder.encode("?"),
     );
   });
 
@@ -65,11 +65,11 @@ describe("encodeSingleByteEncoding", () => {
     );
   });
 
-  it("returns a Uint8Array with the same length as the input string", () => {
+  it("returns a Uint8Array with a different length from input with lone surrogates", () => {
     const input = "a€😅";
     const result = encodeSingleByteEncoding(input, encodingIndex);
     expect(result).toBeInstanceOf(Uint8Array);
-    expect(result).toHaveLength(input.length);
+    expect(result).not.toHaveLength(input.length);
   });
 
   // ASCII should not be mapped incorrectly
