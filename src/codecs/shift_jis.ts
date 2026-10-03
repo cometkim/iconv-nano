@@ -4,12 +4,11 @@ import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
 
 // https://encoding.spec.whatwg.org/#shift_jis-encoder
 const encode: Encoder = (input) => {
-  const arrayBuffer = new ArrayBuffer(input.length * 2);
+  const buf = new Uint8Array(input.length * 2);
   let byteOffset = 0;
-  const buf = new Uint8Array(arrayBuffer);
 
-  for (let index = 0; index < input.length; index++) {
-    let codePoint = input.codePointAt(index)!;
+  for (const char of input) {
+    let codePoint = char.codePointAt(0)!;
     if ((0x00 <= codePoint && codePoint <= 0x7f) || codePoint === 0x80) {
       buf[byteOffset] = codePoint;
       byteOffset++;

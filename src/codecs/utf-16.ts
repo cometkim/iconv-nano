@@ -16,19 +16,19 @@ const encode: Encoder<EncodeOptions & { endianness?: Endianness }> = (
   const isLittleEndian = endianness === "little-endian";
 
   const arrayBuffer = new ArrayBuffer(input.length * 2 + (addBOM ? 2 : 0));
-  const view = new DataView(arrayBuffer);
-  let offset = 0;
+  const dataView = new DataView(arrayBuffer);
+  let byteOffset = 0;
 
   if (addBOM) {
     // BOM is 0xFEFF
-    view.setUint16(offset, 0xfeff, isLittleEndian);
-    offset += 2;
+    dataView.setUint16(byteOffset, 0xfeff, isLittleEndian);
+    byteOffset += 2;
   }
 
   for (let index = 0; index < input.length; index++) {
     const codeUnit = input.charCodeAt(index);
-    view.setUint16(offset, codeUnit, isLittleEndian);
-    offset += 2;
+    dataView.setUint16(byteOffset, codeUnit, isLittleEndian);
+    byteOffset += 2;
   }
 
   return new Uint8Array(arrayBuffer);

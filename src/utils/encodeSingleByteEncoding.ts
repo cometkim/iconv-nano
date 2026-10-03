@@ -6,6 +6,8 @@ const encodeSingleByteEncoding = (
 ): Uint8Array<ArrayBuffer> => {
   const buf = new Uint8Array(input.length);
   let byteOffset = 0;
+  // for...of loop is faster
+  // https://jsbm.dev/YK2fFDSwJPc6E
   // https://github.com/jeremy-code/iconv-nano/issues/3
   for (const char of input) {
     // non-null, 0 is never larger than input.length
