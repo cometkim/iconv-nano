@@ -10,7 +10,7 @@
 
 You probably shouldn't use this for now.
 
-I'm waiting on ESM [namespace imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#namespace_import) in Rolldown ([rolldown/rolldown#7874](https://github.com/rolldown/rolldown/issues/7874)) to be supported. It looks like it will be coming on Rolldown 1.4.
+I'm waiting on ESM [namespace imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#namespace_import) in Rolldown ([rolldown/rolldown#7874](https://github.com/rolldown/rolldown/issues/7874)) to be supported. It looks like it will be coming on Rolldown 1.4. While tree-shaking will still work for encodings, the individual `encode`/`decode` functions cannot be treeshook until this is resolved.
 
 Documentation is avaliable at this URL: https://npmx.dev/package-docs/iconv-nano.
 
@@ -22,11 +22,14 @@ import * as iconv from "iconv-nano";
 iconv.utf8.encode("😅").toHex(); // "f09f9885"
 iconv.utf8.decode(Uint8Array.fromHex("f09f9885")); // "😅"
 
-iconv.ascii.encode("😅").toHex(); // "3f3f"
-iconv.ascii.decode(Uint8Array.fromHex("3f3f")); // "??"
+iconv.ascii.encode("😅").toHex(); // "3f"
+iconv.ascii.decode(Uint8Array.fromHex("3f")); // "?"
 
 iconv.utf16.encode("😅", { endianness: "little-endian" }).toHex(); // "3dd805de"
 iconv.utf16.decode(Uint8Array.fromHex("3dd805de")); // "😅"
+
+iconv.shift_jis.encode("文字化け"); // "95b68e9a89bb82af"
+iconv.shift_jis.decode(Uint8Array.fromHex("95b68e9a89bb82af")); // "文字化け"
 ```
 
 ## Supported encodings
