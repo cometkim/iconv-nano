@@ -64,6 +64,7 @@ iconv.utf16.decode(Uint8Array.fromHex("3dd805de")); // "😅"
 - utf-16be
 - utf-16le
 - shift_jis
+- euc-kr
 
 ## License
 

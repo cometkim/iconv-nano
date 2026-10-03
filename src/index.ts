@@ -31,6 +31,8 @@ import * as windows_1258 from "./codecs/single-byte/windows-1258.js";
 import * as x_mac_cyrillic from "./codecs/single-byte/x-mac-cyrillic.js";
 // Legacy multi-byte Japanese encodings
 import * as shift_jis from "./codecs/shift_jis.js";
+// Legacy multi-byte Korean encodings
+import * as euc_kr from "./codecs/euc-kr.js";
 // Legacy miscellaneous encodings
 import * as utf_16 from "./codecs/utf-16.js";
 import * as utf_16be from "./codecs/utf-16be.js";
@@ -212,6 +214,18 @@ export {
   shift_jis as sjis,
   shift_jis as windows_31j,
   shift_jis as x_sjis,
+
+  // Legacy multi-byte Korean encodings
+  euc_kr,
+  euc_kr as cseuckr,
+  euc_kr as csksc56011987,
+  euc_kr as iso_ir_149,
+  euc_kr as korean,
+  euc_kr as ks_c_5601_1987,
+  euc_kr as ks_c_5601_1989,
+  euc_kr as ksc5601,
+  euc_kr as ksc_5601,
+  euc_kr as windows_949,
 
   // Legacy miscellaneous encodings
   utf_16,
