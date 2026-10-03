@@ -25,4 +25,20 @@ type BufferSource = ArrayBufferLike | ArrayBufferView;
 
 type Endianness = "big-endian" | "little-endian";
 
-export type { EncodeOptions, DecodeOptions, BufferSource, Endianness };
+type Encoder<TOptions extends EncodeOptions = EncodeOptions> = (
+  input: string,
+  options?: TOptions,
+) => Uint8Array<ArrayBuffer>;
+type Decoder<TOptions extends DecodeOptions = DecodeOptions> = (
+  input: BufferSource,
+  decodeOptions?: TOptions,
+) => string;
+
+export type {
+  EncodeOptions,
+  DecodeOptions,
+  BufferSource,
+  Endianness,
+  Encoder,
+  Decoder,
+};

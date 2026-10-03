@@ -1,12 +1,12 @@
-import type { DecodeOptions, BufferSource } from "../interfaces.js";
+import type { Encoder, Decoder } from "../interfaces.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
 import { getCachedTextEncoder } from "../utils/getCachedTextEncoder.js";
 
-const encode = (input: string): Uint8Array<ArrayBuffer> => {
+const encode: Encoder = (input) => {
   return getCachedTextEncoder().encode(input);
 };
 
-const decode = (input: BufferSource, decodeOptions?: DecodeOptions): string => {
+const decode: Decoder = (input, decodeOptions) => {
   const stripBOM = decodeOptions?.stripBOM ?? true;
 
   return getCachedTextDecoder("utf-8", {

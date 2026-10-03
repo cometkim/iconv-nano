@@ -1,14 +1,15 @@
 import type {
-  BufferSource,
   DecodeOptions,
+  Decoder,
   EncodeOptions,
+  Encoder,
   Endianness,
 } from "../interfaces.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
 
-const encode = (
-  input: string,
-  options?: EncodeOptions & { endianness?: Endianness },
+const encode: Encoder<EncodeOptions & { endianness?: Endianness }> = (
+  input,
+  options,
 ): Uint8Array<ArrayBuffer> => {
   const addBOM = options?.addBOM ?? false;
   const endianness = options?.endianness ?? "little-endian";
@@ -33,9 +34,9 @@ const encode = (
   return new Uint8Array(arrayBuffer);
 };
 
-const decode = (
-  input: BufferSource,
-  decodeOptions?: DecodeOptions & { endianness?: Endianness },
+const decode: Decoder<DecodeOptions & { endianness?: Endianness }> = (
+  input,
+  decodeOptions,
 ): string => {
   const stripBOM = decodeOptions?.stripBOM ?? true;
   const endianness = decodeOptions?.endianness ?? "little-endian";

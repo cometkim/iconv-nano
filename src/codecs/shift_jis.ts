@@ -1,9 +1,9 @@
 import shift_jis from "../../encodings/shift_jis.json" with { type: "json" };
-import type { DecodeOptions, BufferSource } from "../interfaces.js";
+import type { Encoder, Decoder } from "../interfaces.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
 
 // https://encoding.spec.whatwg.org/#shift_jis-encoder
-const encode = (input: string): Uint8Array<ArrayBuffer> => {
+const encode: Encoder = (input) => {
   const arrayBuffer = new ArrayBuffer(input.length * 2);
   let byteOffset = 0;
   const buf = new Uint8Array(arrayBuffer);
@@ -41,7 +41,7 @@ const encode = (input: string): Uint8Array<ArrayBuffer> => {
   return buf.subarray(0, byteOffset);
 };
 
-const decode = (input: BufferSource, decodeOptions?: DecodeOptions): string => {
+const decode: Decoder = (input, decodeOptions) => {
   const stripBOM = decodeOptions?.stripBOM ?? true;
 
   return getCachedTextDecoder("shift_jis", {
