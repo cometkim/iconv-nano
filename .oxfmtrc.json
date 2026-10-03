@@ -14,7 +14,8 @@
     ],
     "ignoreCase": false,
     "newlinesBetween": true,
-    "order": "asc"
+    "order": "asc",
+    "partitionByComment": true
   },
   "sortPackageJson": true,
   "ignorePatterns": [],

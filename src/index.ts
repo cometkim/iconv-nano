@@ -1,6 +1,6 @@
-// SHIFT_JIS
-import * as shift_jis from "./codecs/shift_jis.js";
-// Single-byte encodings
+// The Encoding
+import * as utf_8 from "./codecs/utf-8.js";
+// Legacy single-byte encodings
 import * as ibm866 from "./codecs/single-byte/ibm866.js";
 import * as iso_8859_2 from "./codecs/single-byte/iso-8859-2.js";
 import * as iso_8859_3 from "./codecs/single-byte/iso-8859-3.js";
@@ -29,16 +29,16 @@ import * as windows_1256 from "./codecs/single-byte/windows-1256.js";
 import * as windows_1257 from "./codecs/single-byte/windows-1257.js";
 import * as windows_1258 from "./codecs/single-byte/windows-1258.js";
 import * as x_mac_cyrillic from "./codecs/single-byte/x-mac-cyrillic.js";
-// UTF-8
-import * as utf_8 from "./codecs/utf-8.js";
-// UTF-16
+// Legacy multi-byte Japanese encodings
+import * as shift_jis from "./codecs/shift_jis.js";
+// Legacy miscellaneous encodings
 import * as utf_16 from "./codecs/utf-16.js";
 import * as utf_16be from "./codecs/utf-16be.js";
 import * as utf_16le from "./codecs/utf-16le.js";
 
 // Aliases from https://encoding.spec.whatwg.org/#names-and-labels
 export {
-  // UTF-8
+  // The Encoding
   utf_8,
   utf_8 as unicode_1_1_utf_8,
   utf_8 as unicode11utf8,
@@ -46,29 +46,7 @@ export {
   utf_8 as utf8,
   utf_8 as x_unicode20utf8,
 
-  // UTF-16
-  utf_16,
-  utf_16 as utf16,
-  utf_16 as unicode,
-  // UTF-16BE
-  utf_16be,
-  utf_16be as unicodefffe,
-  // UTF-16LE
-  utf_16le,
-  utf_16le as csunicode,
-  utf_16le as iso_10646_ucs_2,
-  utf_16le as ucs_2,
-  utf_16le as unicodefeff,
-  // shift_jis
-  shift_jis,
-  shift_jis as csshiftjis,
-  shift_jis as ms932,
-  shift_jis as ms_kanji,
-  shift_jis as sjis,
-  shift_jis as windows_31j,
-  shift_jis as x_sjis,
-
-  // Single-byte encodings
+  // Legacy single-byte encodings
   ibm866,
   ibm866 as cp866,
   ibm866 as csibm866,
@@ -225,4 +203,25 @@ export {
   windows_1258 as x_cp1258,
   x_mac_cyrillic,
   x_mac_cyrillic as x_mac_ukrainian,
+
+  // Legacy multi-byte Japanese encodings
+  shift_jis,
+  shift_jis as csshiftjis,
+  shift_jis as ms932,
+  shift_jis as ms_kanji,
+  shift_jis as sjis,
+  shift_jis as windows_31j,
+  shift_jis as x_sjis,
+
+  // Legacy miscellaneous encodings
+  utf_16,
+  utf_16 as utf16,
+  utf_16 as unicode,
+  utf_16be,
+  utf_16be as unicodefffe,
+  utf_16le,
+  utf_16le as csunicode,
+  utf_16le as iso_10646_ucs_2,
+  utf_16le as ucs_2,
+  utf_16le as unicodefeff,
 };
