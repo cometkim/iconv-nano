@@ -1,3 +1,5 @@
+// SHIFT_JIS
+import * as shift_jis from "./codecs/shift_jis.js";
 // Single-byte encodings
 import * as ibm866 from "./codecs/single-byte/ibm866.js";
 import * as iso_8859_2 from "./codecs/single-byte/iso-8859-2.js";
@@ -57,6 +59,14 @@ export {
   utf_16le as iso_10646_ucs_2,
   utf_16le as ucs_2,
   utf_16le as unicodefeff,
+  // shift_jis
+  shift_jis,
+  shift_jis as csshiftjis,
+  shift_jis as ms932,
+  shift_jis as ms_kanji,
+  shift_jis as sjis,
+  shift_jis as windows_31j,
+  shift_jis as x_sjis,
 
   // Single-byte encodings
   ibm866,
