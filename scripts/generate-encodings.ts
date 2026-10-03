@@ -29,28 +29,39 @@ async function* parseEncodingsFromUrls(urls: string[]) {
       return acc;
     }, {});
 
-    const encodingIndexJson = Object.fromEntries<number>(
-      lines
-        .filter((line) => !line.startsWith("#") && line.trim().length !== 0)
-        .flatMap((line) => {
-          const [rawIndex, codePoint, rawChar] = line.trimStart().split("\t");
-          const char =
-            codePoint !== undefined
-              ? String.fromCodePoint(Number(codePoint))
-              : codePoint;
-          const index = rawIndex !== undefined ? Number(rawIndex) : undefined;
+    const encodingIndexEntries = lines
+      .filter((line) => !line.startsWith("#") && line.trim().length !== 0)
+      .flatMap((line) => {
+        const [rawIndex, codePoint, rawChar] = line.trimStart().split("\t");
+        const char =
+          codePoint !== undefined
+            ? String.fromCodePoint(Number(codePoint))
+            : codePoint;
+        const index = rawIndex !== undefined ? Number(rawIndex) : undefined;
 
-          if (char === undefined || !rawChar?.startsWith(char)) {
-            console.warn(
-              `The character (${rawChar}) at index ${index} does not match the parsed character (${char})`,
-            );
-          }
-          if (char === undefined || index === undefined) {
-            return [];
-          }
-          return [[char, index]];
-        }),
-    );
+        if (char === undefined || !rawChar?.startsWith(char)) {
+          console.warn(
+            `The character (${rawChar}) at index ${index} does not match the parsed character (${char})`,
+          );
+        }
+        if (char === undefined || index === undefined) {
+          return [];
+        }
+        return [[char, index]] as const;
+      });
+
+    const encodingIndexJson = Object.fromEntries<number>(encodingIndexEntries);
+
+    // https://encoding.spec.whatwg.org/#indexes
+    if (url === "index-jis0208.txt") {
+      yield {
+        ...metadata,
+        data: encodingIndexEntries.filter(
+          (value) => !(8272 <= value[1] && value[1] <= 8835),
+        ),
+        url: "index-shift_jis.txt",
+      };
+    }
 
     console.log(`Parsed!`);
     yield { ...metadata, data: encodingIndexJson, url };
