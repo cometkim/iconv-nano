@@ -1,92 +1,112 @@
 /// <reference types="node" />
 
-import { appendFile, mkdir, writeFile } from "node:fs/promises";
-import { basename } from "node:path";
+import { readFile, writeFile } from "node:fs/promises";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const BASE_URL = "https://encoding.spec.whatwg.org";
-const DELAY = 5_000;
-const TEMP_ENCODINGS_DIR = "temp-encodings";
+type Indexes = Record<string, (number | null)[]>;
 
-const sleep = (delay: number) =>
-  new Promise((resolve) => setTimeout(resolve, delay));
+const ENCODINGS_DIR = fileURLToPath(new URL("../encodings", import.meta.url));
 
-async function* parseEncodingsFromUrls(urls: string[]) {
-  for (const url of urls) {
-    await sleep(DELAY);
-    console.log(`Parsing ${url}...`);
-    const encodingIndex = await fetch(new URL(`/${url}`, BASE_URL)).then(
-      (res) => res.text(),
-    );
-    const lines = encodingIndex.split("\n");
-    const metadata = lines.reduce<
-      Partial<{ identifier: string | undefined; date: string | undefined }>
-    >((acc, line) => {
-      if (line.startsWith("# Identifier")) {
-        acc["identifier"] = line.split("Identifier:")[1]?.trim();
-      } else if (line.startsWith("# Date")) {
-        acc["date"] = line.split("Date:")[1]?.trim();
-      }
-      return acc;
-    }, {});
-
-    const encodingIndexEntries = lines
-      .filter((line) => !line.startsWith("#") && line.trim().length !== 0)
-      .flatMap((line) => {
-        const [rawIndex, codePoint, rawChar] = line.trimStart().split("\t");
-        const char =
-          codePoint !== undefined
-            ? String.fromCodePoint(Number(codePoint))
-            : codePoint;
-        const index = rawIndex !== undefined ? Number(rawIndex) : undefined;
-
-        if (char === undefined || !rawChar?.startsWith(char)) {
-          console.warn(
-            `The character (${rawChar}) at index ${index} does not match the parsed character (${char})`,
-          );
-        }
-        if (char === undefined || index === undefined) {
-          return [];
-        }
-        return [[char, index]] as const;
-      });
-
-    const encodingIndexJson = Object.fromEntries<number>(encodingIndexEntries);
-
-    // https://encoding.spec.whatwg.org/#indexes
-    if (url === "index-jis0208.txt") {
-      yield {
-        ...metadata,
-        data: encodingIndexEntries.filter(
-          (value) => !(8272 <= value[1] && value[1] <= 8835),
-        ),
-        url: "index-shift_jis.txt",
-      };
+const parseEncodingIndexArray = (encodingIndexArray: Indexes[keyof Indexes]) =>
+  encodingIndexArray.reduce<Record<string, number>>((acc, codePoint, index) => {
+    const char = codePoint !== null ? String.fromCodePoint(codePoint) : null;
+    if (char !== null && !(char in acc)) {
+      acc[char] = index;
     }
+    return acc;
+  }, {});
 
-    console.log(`Parsed!`);
-    yield { ...metadata, data: encodingIndexJson, url };
-  }
-}
+const main = async () => {
+  console.log("Fetching indexes.json from whatwg/encoding...");
+  const responses = await fetch(
+    `https://raw.githubusercontent.com/whatwg/encoding/refs/heads/main/indexes.json`,
+  ).then((response) => [response, response.clone()] as const);
+  const [indexes, sha256Hash]: [Indexes, string] = await Promise.all([
+    responses[0].json(),
+    responses[1]
+      .bytes()
+      .then((bytes) => crypto.subtle.digest("SHA-256", bytes))
+      .then((arrayBuffer) => new Uint8Array(arrayBuffer).toHex()),
+  ]);
+  console.log("Fetched!");
 
-const generateEncodings = async () => {
-  console.log(`Fetching encodings at ${BASE_URL}...`);
-  const text = await (await fetch(BASE_URL)).text();
+  console.log("Checking indexes.sha256...");
+  const currSha256Hash = await readFile(join(ENCODINGS_DIR, `indexes.sha256`), {
+    encoding: "utf-8",
+  })
+    .then((hash) => hash.split(/\s+/)[0])
+    .catch(() => undefined);
 
-  const urls = Array.from(text.matchAll(/index-[^"]+\.txt/g)).map(
-    (regExpArray) => regExpArray[0],
-  );
-  const uniqueUrls = Array.from(new Set(urls));
-  console.log(`Fetched! ${uniqueUrls.length} unique urls found`);
-
-  await mkdir(TEMP_ENCODINGS_DIR, { recursive: true });
-  for await (const value of parseEncodingsFromUrls(uniqueUrls)) {
-    const fileName = `${TEMP_ENCODINGS_DIR}/${basename(value.url, ".txt").slice("index-".length)}.json`;
-    await writeFile(
-      fileName,
-      `// Identifier: ${value.identifier}\n// Date: ${value.date}\n`,
+  if (currSha256Hash === sha256Hash) {
+    console.log(
+      `indexes.json has not been modified since it was last processed. SHA-256 hash: ${sha256Hash}`,
     );
-    await appendFile(fileName, JSON.stringify(value.data));
+    return;
   }
+
+  await writeFile(
+    join(ENCODINGS_DIR, `indexes.sha256`),
+    `${sha256Hash}  indexes.json`,
+    { encoding: "utf-8" },
+  );
+  console.log(`indexes.sha256 has changed. Updating encodings...`);
+
+  // https://encoding.spec.whatwg.org/#indexes
+  const encodings = Object.entries(indexes).flatMap(
+    ([encoding, encodingIndexArray]) => {
+      // { "gb18030-ranges": [number, number][]; }
+      if (encoding === "gb18030-ranges") {
+        return [];
+      } else if (encoding === "big5") {
+        const encodingIndex = parseEncodingIndexArray(
+          encodingIndexArray.fill(null, 0, (0xa1 - 0x81) * 157),
+        );
+        // Object.fromEntries uses "last key wins" rules
+        const inverseEncodingIndex = Object.fromEntries(
+          encodingIndexArray
+            .filter((value) => value !== null)
+            .map((codePoint, i) => [String.fromCodePoint(codePoint), i]),
+        );
+
+        [0x2550, 0x255e, 0x2561, 0x256a, 0x5341, 0x5345].forEach(
+          (codePoint) => {
+            const char = String.fromCodePoint(codePoint);
+            encodingIndex[char] = inverseEncodingIndex[char]!;
+          },
+        );
+
+        return { encoding, data: encodingIndex };
+      }
+
+      const encodingIndex = parseEncodingIndexArray(encodingIndexArray);
+
+      if (encoding === "jis0208") {
+        return [
+          { encoding, data: encodingIndex },
+          {
+            encoding: "shift_jis",
+            data: parseEncodingIndexArray(
+              encodingIndexArray.fill(null, 8272, 8835),
+            ),
+          },
+        ];
+      }
+      return [{ encoding, data: encodingIndex }];
+    },
+  );
+
+  await Promise.all(
+    [
+      ...encodings,
+      { encoding: "gb18030-ranges", data: indexes["gb18030-ranges"] },
+    ].map(({ encoding, data }) =>
+      writeFile(join(ENCODINGS_DIR, `${encoding}.json`), JSON.stringify(data), {
+        encoding: "utf-8",
+      }),
+    ),
+  );
+  console.log(`Encodings updated!`);
 };
 
-void generateEncodings();
+void main();

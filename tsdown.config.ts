@@ -1,5 +1,4 @@
 import { minify } from "rolldown/utils";
-import stripJsonComments from "strip-json-comments";
 import { defineConfig, type UserConfig } from "tsdown";
 
 const tsdownConfig: UserConfig = defineConfig({
@@ -8,19 +7,6 @@ const tsdownConfig: UserConfig = defineConfig({
   target: "esnext",
   treeshake: true,
   plugins: [
-    {
-      name: "jsonc-plugin",
-      load: {
-        filter: {
-          id: [/.json$/],
-        },
-        async handler(id) {
-          return stripJsonComments(
-            await this.fs.readFile(id, { encoding: "utf8" }),
-          );
-        },
-      },
-    },
     {
       name: "minify-json-plugin",
       renderChunk: {

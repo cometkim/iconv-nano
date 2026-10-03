@@ -7,7 +7,7 @@
     "@changesets/changelog-github",
     { "repo": "jeremy-code/iconv-nano" }
   ],
-  "commit": true,
+  "commit": false,
   "ignore": [],
   "fixed": [],
   "linked": [],
