@@ -64,9 +64,9 @@ const main = async () => {
         );
         // Object.fromEntries uses "last key wins" rules
         const inverseEncodingIndex = Object.fromEntries(
-          encodingIndexArray
-            .filter((value) => value !== null)
-            .map((codePoint, i) => [String.fromCodePoint(codePoint), i]),
+          encodingIndexArray.flatMap((codePoint, i) =>
+            codePoint !== null ? [[String.fromCodePoint(codePoint), i]] : [],
+          ),
         );
 
         [0x2550, 0x255e, 0x2561, 0x256a, 0x5341, 0x5345].forEach(
