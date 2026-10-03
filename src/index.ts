@@ -35,6 +35,7 @@ import * as gbk from "./codecs/gbk.js";
 // Legacy multi-byte Chinese (traditional) encodings
 import * as big5 from "./codecs/big5.js";
 // Legacy multi-byte Japanese encodings
+import * as euc_jp from "./codecs/euc-jp.js";
 import * as shift_jis from "./codecs/shift_jis.js";
 // Legacy multi-byte Korean encodings
 import * as euc_kr from "./codecs/euc-kr.js";
@@ -231,6 +232,9 @@ export {
   big5 as x_x_big5,
 
   // Legacy multi-byte Japanese encodings
+  euc_jp,
+  euc_jp as cseucpkdfmtjapanese,
+  euc_jp as x_euc_jp,
   shift_jis,
   shift_jis as csshiftjis,
   shift_jis as ms932,
