@@ -21,33 +21,24 @@ describe("encodeSingleByteEncoding", () => {
     );
   });
 
-  it("returns non-ASCII characters as 0x80 + their index value", () => {
-    expect(encodeSingleByteEncoding("€", encodingIndex)).toEqual(
-      Uint8Array.of(0x80),
-    );
-    expect(encodeSingleByteEncoding("é", encodingIndex)).toEqual(
-      Uint8Array.of(0x80 + encodingIndex["é"]),
-    );
-    expect(encodeSingleByteEncoding("я", encodingIndex)).toEqual(
-      Uint8Array.of(0x80 + encodingIndex["я"]),
-    );
-  });
+  it.for(Object.entries(encodingIndex))(
+    "returns non-ASCII characters (%s) as 0x80 + their value (%d)",
+    ([char, value]) => {
+      expect(encodeSingleByteEncoding(char, encodingIndex)).toEqual(
+        new Uint8Array([0x80 + value]),
+      );
+    },
+  );
 
   it("returns ASCII and mapped characters", () => {
-    expect(encodeSingleByteEncoding("a€b", encodingIndex)).toEqual(
-      Uint8Array.of(0x61, 0x80, 0x62),
-    );
-    expect(encodeSingleByteEncoding("a€b", encodingIndex).toHex()).toBe(
-      "618062",
+    expect(encodeSingleByteEncoding("a€bécяd", encodingIndex)).toEqual(
+      new Uint8Array([0x61, 0x80, 0x62, 0xe9, 0x63, 0xff, 0x64]),
     );
   });
 
   it("replaces unmappable characters with '?' (0x3f)", () => {
-    expect(encodeSingleByteEncoding("日", encodingIndex)).toEqual(
-      Uint8Array.of(0x3f),
-    );
-    expect(encodeSingleByteEncoding("a日b", encodingIndex)).toEqual(
-      Uint8Array.of(0x61, 0x3f, 0x62),
+    expect(encodeSingleByteEncoding("a日b曰c目d", encodingIndex)).toEqual(
+      new Uint8Array([0x61, 0x3f, 0x62, 0x3f, 0x63, 0x3f, 0x64]),
     );
   });
 
