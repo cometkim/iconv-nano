@@ -31,6 +31,7 @@ import * as windows_1258 from "./codecs/single-byte/windows-1258.js";
 import * as x_mac_cyrillic from "./codecs/single-byte/x-mac-cyrillic.js";
 // Legacy multi-byte Chinese (simplified) encodings
 import * as gb18030 from "./codecs/gb18030.js";
+import * as gbk from "./codecs/gbk.js";
 // Legacy multi-byte Chinese (traditional) encodings
 import * as big5 from "./codecs/big5.js";
 // Legacy multi-byte Japanese encodings
@@ -211,6 +212,15 @@ export {
   x_mac_cyrillic as x_mac_ukrainian,
 
   // Legacy multi-byte Chinese (simplified) encodings
+  gbk,
+  gbk as chinese,
+  gbk as csgb2312,
+  gbk as csiso58gb231280,
+  gbk as gb2312,
+  gbk as gb_2312,
+  gbk as gb_2312_80,
+  gbk as iso_ir_58,
+  gbk as x_gbk,
   gb18030,
 
   // Legacy multi-byte Chinese (traditional) encodings

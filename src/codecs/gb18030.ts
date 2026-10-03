@@ -1,6 +1,6 @@
 import gb18030_ranges from "../../encodings/gb18030-ranges.json" with { type: "json" };
 import gb18030 from "../../encodings/gb18030.json" with { type: "json" };
-import type { Encoder, Decoder } from "../interfaces.js";
+import type { Encoder, Decoder, EncodeOptions } from "../interfaces.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
 
 const TABLE: Record<number, [number, number]> = {
@@ -53,10 +53,13 @@ const getGb18030RangesPointer = (codePoint: number) => {
 };
 
 // https://encoding.spec.whatwg.org/#gb18030-encoder
-const encode: Encoder = (input) => {
+const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
+  input,
+  encodeOptions,
+) => {
+  let isGBK = encodeOptions?.isGBK ?? false;
   const buf = new Uint8Array(input.length * 2);
   let byteOffset = 0;
-  let isGBK = false;
 
   for (const char of input) {
     let codePoint = char.codePointAt(0)!;
