@@ -36,11 +36,7 @@ jobs:
       - name: Get Playwright version
         id: playwright-version
         run: |
-          playwright_version=$(
-            pnpm why playwright --json \
-              | jq -r "first | .version"
-          )
-          echo "PLAYWRIGHT_VERSION=${playwright_version}" >> "$GITHUB_OUTPUT"
+          echo "PLAYWRIGHT_VERSION=$(pnpm view playwright version)" >> "$GITHUB_OUTPUT"
 
       - name: Cache Playwright browsers
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
