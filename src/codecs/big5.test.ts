@@ -12,4 +12,11 @@ describe("Big5", () => {
 
     expect(big5.decode(encodedInput)).toBe(input);
   });
+
+  it("encodes unknown characters as ?", () => {
+    const input = "🧋";
+    const encodedInput = big5.encode(input);
+    expect(encodedInput).toEqual(big5.encode("?"));
+    expect(big5.decode(encodedInput)).toBe("?");
+  });
 });

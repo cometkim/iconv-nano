@@ -36,4 +36,10 @@ describe("Shift_JIS", () => {
 
     expect(shift_jis.decode(encodedInput)).toBe(input);
   });
+
+  it("encodes unknown characters as ?", () => {
+    const encodedInput = shift_jis.encode("🈲");
+    expect(encodedInput).toEqual(shift_jis.encode("?"));
+    expect(shift_jis.decode(encodedInput)).toBe("?");
+  });
 });

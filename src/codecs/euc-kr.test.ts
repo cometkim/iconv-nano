@@ -12,4 +12,11 @@ describe("EUC-KR", () => {
 
     expect(euc_kr.decode(encodedInput)).toBe(input);
   });
+
+  it("encodes unknown characters as ?", () => {
+    const input = "🥘";
+    const encodedInput = euc_kr.encode(input);
+    expect(encodedInput).toEqual(euc_kr.encode("?"));
+    expect(euc_kr.decode(encodedInput)).toBe("?");
+  });
 });
