@@ -45,6 +45,7 @@ import * as replacement from "./codecs/replacement.js";
 import * as utf_16 from "./codecs/utf-16.js";
 import * as utf_16be from "./codecs/utf-16be.js";
 import * as utf_16le from "./codecs/utf-16le.js";
+import * as x_user_defined from "./codecs/x-user-defined.js";
 
 // Aliases from https://encoding.spec.whatwg.org/#names-and-labels
 export {
@@ -276,4 +277,5 @@ export {
   utf_16le as iso_10646_ucs_2,
   utf_16le as ucs_2,
   utf_16le as unicodefeff,
+  x_user_defined,
 };

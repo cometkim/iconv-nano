@@ -73,6 +73,7 @@ iconv.shift_jis.decode(Uint8Array.fromHex("95b68e9a89bb82af")); // "文字化け
 - EUC-JP
 - ISO-2022-JP
 - replacement
+- x-user-defined
 
 ## License
 
