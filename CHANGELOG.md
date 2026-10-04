@@ -1,5 +1,21 @@
 # iconv-nano
 
+## 0.0.4
+
+### Patch Changes
+
+- [`1864254`](https://github.com/jeremy-code/iconv-nano/commit/186425401db3bc5f55109f887e4f4913d59f6f7b) Thanks [@jeremy-code](https://github.com/jeremy-code)! - fix: update byteOffset after returning four bytes in GB18030 encoding
+
+- [`5732aac`](https://github.com/jeremy-code/iconv-nano/commit/5732aac7943eaecafedcd6d86fcadf3271665dfb) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: implement x-user-defined codec
+
+- [`e0cea75`](https://github.com/jeremy-code/iconv-nano/commit/e0cea75465a5e04c7e2d9f7928847616d66e2aea) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: add isAsciiCodePoint utility function
+
+- [`079d846`](https://github.com/jeremy-code/iconv-nano/commit/079d846bdb2547eaaaab64ab386d83375276485f) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: implement ISO-2022-JP codec
+
+- [`a577dce`](https://github.com/jeremy-code/iconv-nano/commit/a577dcecba29e9119e98106f689bf0b17cdb2c25) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: implement replacement codec
+
+- [`5d63240`](https://github.com/jeremy-code/iconv-nano/commit/5d632404698cd423edb260004a1f2731526b8aa5) Thanks [@jeremy-code](https://github.com/jeremy-code)! - chore: use slice instead of subarray, consistently handle unknown characters
+
 ## 0.0.3
 
 ### Patch Changes
