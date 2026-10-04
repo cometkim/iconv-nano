@@ -104,10 +104,11 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
       pointer = pointer % (10 * 126);
       const byte3 = pointer / 10;
       const byte4 = pointer % 10;
-      buf[byteOffset] = byte1 + 0x81;
-      buf[byteOffset + 1] = byte2 + 0x30;
-      buf[byteOffset + 2] = byte3 + 0x81;
-      buf[byteOffset + 3] = byte4 + 0x30;
+      buf.set(
+        [byte1 + 0x81, byte2 + 0x30, byte3 + 0x81, byte4 + 0x30],
+        byteOffset,
+      );
+      byteOffset += 4;
     }
   }
   return buf.slice(0, byteOffset);
