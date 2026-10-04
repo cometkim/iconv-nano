@@ -44,7 +44,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest --coverage",
-    "generate-encodings": "node ./scripts/generate-encodings.ts"
+    "generate-encodings": "node ./scripts/generate-encodings.ts",
+    "ci:publish": "./scripts/publish.sh"
   },
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.5",
