@@ -13,8 +13,6 @@ jobs:
     name: Build
     permissions:
       contents: read # Access to check out code
-      code-quality: write # Upload code coverage
-      pull-requests: read # Find associated pull request
     runs-on: ubuntu-latest
 
     steps:
@@ -56,14 +54,9 @@ jobs:
         run: pnpm run test:coverage --coverage.reporter=text-summary --coverage.reporter=cobertura
 
       - name: Upload Vitest coverage report
-        if: >-
-          github.event_name == 'push' ||
-          (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
-        uses: actions/upload-code-coverage@2b21a77928be8d5168c2b9581a67f2adbebacc52 # v1.4.4
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
-          file: coverage/cobertura-coverage.xml
-          language: TypeScript
-          label: code-coverage/vitest
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Build
         run: pnpm run build
