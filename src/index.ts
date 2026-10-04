@@ -41,6 +41,7 @@ import * as shift_jis from "./codecs/shift_jis.js";
 // Legacy multi-byte Korean encodings
 import * as euc_kr from "./codecs/euc-kr.js";
 // Legacy miscellaneous encodings
+import * as replacement from "./codecs/replacement.js";
 import * as utf_16 from "./codecs/utf-16.js";
 import * as utf_16be from "./codecs/utf-16be.js";
 import * as utf_16le from "./codecs/utf-16le.js";
@@ -259,6 +260,12 @@ export {
   euc_kr as windows_949,
 
   // Legacy miscellaneous encodings
+  replacement,
+  replacement as csiso2022kr,
+  replacement as hz_gb_2312,
+  replacement as iso_2022_cn,
+  replacement as iso_2022_cn_ext,
+  replacement as iso_2022_kr,
   utf_16,
   utf_16 as utf16,
   utf_16 as unicode,
