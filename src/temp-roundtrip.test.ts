@@ -8,14 +8,10 @@ import * as iconv from "./index";
 const CODECS = [
   { name: "GBK", codec: iconv.gbk, encoding: gb18030_encoding },
   { name: "gb18030", codec: iconv.gb18030, encoding: gb18030_encoding },
-  { name: "EUC-JP", codec: iconv.euc_jp, encoding: jis0208_encoding },
   {
     name: "iso-2022-jp",
     codec: iconv.iso_2022_jp,
-    encoding: {
-      ...iso_2022_jp_katakana,
-      ...jis0208_encoding,
-    },
+    encoding: { ...iso_2022_jp_katakana, ...jis0208_encoding },
   },
 ];
 
