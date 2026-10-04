@@ -23,7 +23,7 @@ const encode: Encoder = (input) => {
 const decode: Decoder = (input, decodeOptions) => {
   const stripBOM = decodeOptions?.stripBOM ?? true;
 
-  return getCachedTextDecoder("replacement", {
+  return getCachedTextDecoder("x-user-defined", {
     fatal: false,
     ignoreBOM: !stripBOM,
   }).decode(input);
