@@ -1,17 +1,19 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": [
-    "typescript",
-    "unicorn",
-    "oxc",
     "eslint",
+    "unicorn",
+    "typescript",
+    "oxc",
     "import",
-    "node",
+    "jsdoc",
+    "vitest",
     "promise",
-    "vitest"
+    "node"
   ],
   "categories": {
     "correctness": "error",
+    "perf": "warn",
     "suspicious": "warn"
   },
   "rules": {
@@ -21,6 +23,8 @@
     "builtin": true
   },
   "options": {
+    "denyWarnings": true,
+    "reportUnusedDisableDirectives": "warn",
     "typeAware": true,
     "typeCheck": true
   }
