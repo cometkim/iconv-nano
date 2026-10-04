@@ -16,6 +16,11 @@ const encode: Encoder = (input) => {
       const pointer = (euc_kr as Record<string, number>)[
         String.fromCodePoint(codePoint)
       ]!;
+      if (pointer === undefined) {
+        buf[byteOffset] = 0x3f; // ?
+        byteOffset++;
+        continue;
+      }
       const leading = Math.floor(pointer / 190) + 0x81;
       const trailing = (pointer % 190) + 0x41;
       buf[byteOffset] = leading;
@@ -23,7 +28,7 @@ const encode: Encoder = (input) => {
       byteOffset += 2;
     }
   }
-  return buf.subarray(0, byteOffset);
+  return buf.slice(0, byteOffset);
 };
 
 const decode: Decoder = (input, decodeOptions) => {

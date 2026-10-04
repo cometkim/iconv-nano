@@ -7,6 +7,8 @@ import type {
 } from "../interfaces.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
 
+const BYTE_ORDER_MARK = 0xfeff; // BOM in UTF-16
+
 const encode: Encoder<EncodeOptions & { endianness?: Endianness }> = (
   input,
   options,
@@ -15,23 +17,24 @@ const encode: Encoder<EncodeOptions & { endianness?: Endianness }> = (
   const endianness = options?.endianness ?? "little-endian";
   const isLittleEndian = endianness === "little-endian";
 
-  const arrayBuffer = new ArrayBuffer(input.length * 2 + (addBOM ? 2 : 0));
-  const dataView = new DataView(arrayBuffer);
+  const dataView = new DataView(
+    new ArrayBuffer(input.length * 2 + (addBOM ? 2 : 0)),
+  );
   let byteOffset = 0;
 
   if (addBOM) {
-    // BOM is 0xFEFF
-    dataView.setUint16(byteOffset, 0xfeff, isLittleEndian);
+    dataView.setUint16(byteOffset, BYTE_ORDER_MARK, isLittleEndian);
     byteOffset += 2;
   }
 
   for (let index = 0; index < input.length; index++) {
+    // Using charCodeAt here instead of codePointAt is intentional
     const codeUnit = input.charCodeAt(index);
     dataView.setUint16(byteOffset, codeUnit, isLittleEndian);
     byteOffset += 2;
   }
 
-  return new Uint8Array(arrayBuffer);
+  return new Uint8Array(dataView.buffer);
 };
 
 const decode: Decoder<DecodeOptions & { endianness?: Endianness }> = (

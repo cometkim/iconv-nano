@@ -13,10 +13,10 @@ const encode: Encoder = (input) => {
       buf[byteOffset] = codePoint;
       byteOffset++;
     } else if (codePoint === 0x00a5 /* ¥ */) {
-      buf[byteOffset] = 0x5c;
+      buf[byteOffset] = 0x5c; // \
       byteOffset++;
     } else if (codePoint === 0x203e /* ‾ */) {
-      buf[byteOffset] = 0x7e;
+      buf[byteOffset] = 0x7e; // ~
       byteOffset++;
     } else if (/* ｡ */ 0xff61 <= codePoint && codePoint <= 0xff9f /* ﾟ */) {
       buf[byteOffset] = 0x8e;
@@ -32,16 +32,16 @@ const encode: Encoder = (input) => {
       if (pointer === undefined) {
         buf[byteOffset] = 0x3f; // ?
         byteOffset++;
-      } else {
-        const leading = Math.floor(pointer / 94) + 0xa1;
-        const trailing = (pointer % 94) + 0xa1;
-        buf[byteOffset] = leading;
-        buf[byteOffset + 1] = trailing;
-        byteOffset += 2;
+        continue;
       }
+      const leading = Math.floor(pointer / 94) + 0xa1;
+      const trailing = (pointer % 94) + 0xa1;
+      buf[byteOffset] = leading;
+      buf[byteOffset + 1] = trailing;
+      byteOffset += 2;
     }
   }
-  return buf.subarray(0, byteOffset);
+  return buf.slice(0, byteOffset);
 };
 
 const decode: Decoder = (input, decodeOptions) => {

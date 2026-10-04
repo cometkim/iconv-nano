@@ -109,7 +109,7 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
       buf[byteOffset + 3] = byte4 + 0x30;
     }
   }
-  return buf.subarray(0, byteOffset);
+  return buf.slice(0, byteOffset);
 };
 
 const decode: Decoder = (input, decodeOptions) => {

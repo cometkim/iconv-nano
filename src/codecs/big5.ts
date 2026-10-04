@@ -15,7 +15,12 @@ const encode: Encoder = (input) => {
     } else {
       const pointer = (big5 as Record<string, number>)[
         String.fromCodePoint(codePoint)
-      ]!;
+      ];
+      if (pointer === undefined) {
+        buf[byteOffset] = 0x3f; // ?
+        byteOffset++;
+        continue;
+      }
       const leading = Math.floor(pointer / 157) + 0x81;
       const trailing = pointer % 157;
       const offset = trailing < 0x3f ? 0x40 : 0x62;
@@ -24,7 +29,7 @@ const encode: Encoder = (input) => {
       byteOffset += 2;
     }
   }
-  return buf.subarray(0, byteOffset);
+  return buf.slice(0, byteOffset);
 };
 
 const decode: Decoder = (input, decodeOptions) => {
