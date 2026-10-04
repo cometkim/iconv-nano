@@ -5,8 +5,10 @@
 [license-badge]: https://img.shields.io/github/license/jeremy-code/iconv-nano
 [npm-version-badge]: https://img.shields.io/npm/v/iconv-nano
 [npm-package]: https://www.npmjs.com/package/iconv-nano
+[code-coverage-badge]: https://codecov.io/github/jeremy-code/iconv-nano/graph/badge.svg
+[code-coverage]: https://codecov.io/github/jeremy-code/iconv-nano
 
-[![GitHub Actions][github-actions-badge]][github-actions] [![License][license-badge]](LICENSE) [![NPM version][npm-version-badge]][npm-package]
+[![GitHub Actions][github-actions-badge]][github-actions] [![License][license-badge]](LICENSE) [![NPM version][npm-version-badge]][npm-package] [![Code coverage][code-coverage-badge]][code-coverage]
 
 You probably shouldn't use this for now.
 
