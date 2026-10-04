@@ -1,6 +1,7 @@
 import shift_jis from "../../encodings/shift_jis.json" with { type: "json" };
 import type { Encoder, Decoder } from "../interfaces.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
+import { isAsciiCodePoint } from "../utils/isAsciiCodePoint.js";
 
 // https://encoding.spec.whatwg.org/#shift_jis-encoder
 const encode: Encoder = (input) => {
@@ -9,7 +10,7 @@ const encode: Encoder = (input) => {
 
   for (const char of input) {
     let codePoint = char.codePointAt(0)!;
-    if ((0x00 <= codePoint && codePoint <= 0x7f) || codePoint === 0x80) {
+    if (isAsciiCodePoint(codePoint) || codePoint === 0x80) {
       buf[byteOffset] = codePoint;
       byteOffset++;
     } else if (codePoint === 0xa5 /* ¥ */) {

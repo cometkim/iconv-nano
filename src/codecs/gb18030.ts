@@ -2,6 +2,7 @@ import gb18030_ranges from "../../encodings/gb18030-ranges.json" with { type: "j
 import gb18030 from "../../encodings/gb18030.json" with { type: "json" };
 import type { Encoder, Decoder, EncodeOptions } from "../interfaces.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
+import { isAsciiCodePoint } from "../utils/isAsciiCodePoint.js";
 
 const TABLE: Record<number, [number, number]> = {
   0xe78d: [0xa6, 0xd9],
@@ -63,7 +64,7 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
 
   for (const char of input) {
     let codePoint = char.codePointAt(0)!;
-    if (0x00 <= codePoint && codePoint <= 0x7f) {
+    if (isAsciiCodePoint(codePoint)) {
       buf[byteOffset] = codePoint;
       byteOffset++;
     } else if (codePoint === 0xe5e5) {

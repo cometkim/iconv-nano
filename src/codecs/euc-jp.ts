@@ -1,6 +1,7 @@
 import jis0208 from "../../encodings/jis0208.json" with { type: "json" };
 import type { Encoder, Decoder } from "../interfaces.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
+import { isAsciiCodePoint } from "../utils/isAsciiCodePoint.js";
 
 // https://encoding.spec.whatwg.org/#euc-jp-encoder
 const encode: Encoder = (input) => {
@@ -9,7 +10,7 @@ const encode: Encoder = (input) => {
 
   for (const char of input) {
     let codePoint = char.codePointAt(0)!;
-    if (0x00 <= codePoint && codePoint <= 0x7f) {
+    if (isAsciiCodePoint(codePoint)) {
       buf[byteOffset] = codePoint;
       byteOffset++;
     } else if (codePoint === 0x00a5 /* ¥ */) {
