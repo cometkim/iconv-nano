@@ -71,6 +71,7 @@ iconv.shift_jis.decode(Uint8Array.fromHex("95b68e9a89bb82af")); // "文字化け
 - Big5
 - gb18030
 - EUC-JP
+- ISO-2022-JP
 
 ## License
 
