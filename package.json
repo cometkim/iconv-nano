@@ -43,7 +43,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest --coverage",
+    "test:coverage": "vitest --run --coverage",
     "generate-encodings": "node ./scripts/generate-encodings.ts",
     "ci:publish": "./scripts/publish.sh"
   },

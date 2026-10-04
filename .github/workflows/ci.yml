@@ -13,6 +13,8 @@ jobs:
     name: Build
     permissions:
       contents: read # Access to check out code
+      code-quality: write # Upload code coverage
+      pull-requests: read # Find associated pull request
     runs-on: ubuntu-latest
 
     steps:
@@ -51,7 +53,17 @@ jobs:
         run: pnpm playwright install --with-deps chromium-headless-shell
 
       - name: Run tests
-        run: pnpm run test
+        run: pnpm run test:coverage --coverage.reporter=text-summary --coverage.reporter=cobertura
+
+      - name: Upload Vitest coverage report
+        if: >-
+          github.event_name == 'push' ||
+          (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+        uses: actions/upload-code-coverage@2b21a77928be8d5168c2b9581a67f2adbebacc52 # v1.4.4
+        with:
+          file: coverage/cobertura-coverage.xml
+          language: TypeScript
+          label: code-coverage/vitest
 
       - name: Build
         run: pnpm run build

@@ -9,13 +9,14 @@ const vitestConfig: ViteUserConfig = defineConfig({
       provider: "v8",
       include: ["src/**/*.ts"],
       exclude: ["src/**/*.test.ts", "src/interfaces.ts"],
-      reporter: ["text", "html"],
+      reporter: ["text"],
     },
     browser: {
       provider: playwright(),
       enabled: true,
       instances: [{ browser: "chromium" }],
       headless: true,
+      ui: false,
     },
   },
 });
