@@ -4,6 +4,29 @@ import shift_js_encoding from "../../encodings/shift_jis.json" with { type: "jso
 import * as shift_jis from "./shift_jis.js";
 
 describe("Shift_JIS", () => {
+  it("correctly encodes sample inputs", () => {
+    // python3 -c 'print("月が綺麗ですね。".encode("shift_jis").hex())'
+    expect(shift_jis.encode("月が綺麗ですね。")).toEqual(
+      Uint8Array.fromHex("8c8e82aae35997ed82c582b782cb8142"),
+    );
+
+    // python3 -c 'print("祇園精舍の鐘の声、諸行無常の響きあり。".encode("shift_jis").hex())'
+    expect(shift_jis.encode("祇園精舍の鐘の声、諸行無常の響きあり。")).toEqual(
+      Uint8Array.fromHex(
+        "8b5f898090b8e47182cc8fe082cc90ba81418f948d7396b38fed82cc8bbf82ab82a082e88142",
+      ),
+    );
+
+    // python3 -c 'print("だって… あの さっき チェンソーで戦ってたから……".encode("shift_jis").hex())'
+    expect(
+      shift_jis.encode("だって… あの さっき チェンソーで戦ってたから……"),
+    ).toEqual(
+      Uint8Array.fromHex(
+        "82be82c182c481632082a082cc2082b382c182ab20836083468393835c815b82c590ed82c182c482bd82a982e781638163",
+      ),
+    );
+  });
+
   it("encodes ¥ as \\", () => {
     const encodedInput = shift_jis.encode("¥");
     expect(encodedInput).toEqual(new Uint8Array(["\\".charCodeAt(0)]));

@@ -14,6 +14,19 @@ const ESCAPE_SEQUENCES = {
 
 describe("ISO-2022-JP", () => {
   describe("encode", () => {
+    it("correctly encodes sample inputs", () => {
+      // python3 -c 'print("\"I wish I were a bird.\"「なんで英語喋っとるん？」「娘がアメリカに行くねん。」".encode("iso-2022-jp").hex())'
+      expect(
+        iso_2022_jp.encode(
+          '"I wish I were a bird."「なんで英語喋っとるん？」「娘がアメリカに行くねん。」',
+        ),
+      ).toEqual(
+        Uint8Array.fromHex(
+          "2249207769736820492077657265206120626972642e221b24422156244a247324473151386c437d24432448246b24732129215721564c3c242c25222561256a252b244b3954242f244d2473212321571b2842",
+        ),
+      );
+    });
+
     it("returns empty Uint8Array for empty string", () => {
       expect(iso_2022_jp.encode("")).toHaveLength(0);
     });
@@ -226,19 +239,22 @@ describe("ISO-2022-JP", () => {
     });
     describe("half-width katakana", () => {
       it("encodes half-width katakana as their full-width equivalents", () => {
-        const input = "ｱ";
+        const input = "ﾆｭﾆｭﾆｭ";
         const encodedInput = iso_2022_jp.encode(input);
-        expect(encodedInput).toEqual(iso_2022_jp.encode("ア"));
+        expect(encodedInput).toEqual(iso_2022_jp.encode("ニュニュニュ"));
+        // ニュ is [0x25, 0x4b, 0x25, 0x65]
+        const fullWidthKatakana = [0x25, 0x4b, 0x25, 0x65];
         expect(encodedInput).toEqual(
-          // ア is [0x25, 0x22]
           new Uint8Array([
             ...ESCAPE_SEQUENCES.jis0208,
-            0x25,
-            0x22,
+            ...fullWidthKatakana,
+            ...fullWidthKatakana,
+            ...fullWidthKatakana,
             ...ESCAPE_SEQUENCES.ascii,
           ]),
         );
       });
+
       it("encodes ｡ (U+FF61) as 。 (U+3002)", () => {
         expect(iso_2022_jp.encode("\uFF61")).toEqual(
           iso_2022_jp.encode("\u3002"),
@@ -250,6 +266,7 @@ describe("ISO-2022-JP", () => {
           iso_2022_jp.encode("\u309C"),
         );
       });
+
       it("maps every half-width katakana based on ISO-2022-JP katakana index", () => {
         const fullWidth = Object.entries(iso_2022_jp_katakana).toSorted(
           (a, b) => a[1] - b[1],
@@ -261,14 +278,6 @@ describe("ISO-2022-JP", () => {
             iso_2022_jp.encode(String.fromCodePoint(0xff61 + index)),
           ).toEqual(iso_2022_jp.encode(char));
         }
-      });
-      // I think this is broken on Chrome because it returns "�アイウ"
-      // when "アイウ" is correct
-      // On Firefox, `new TextDecoder("iso-2022-jp").decode(Uint8Array.fromHex("1b24422522252425261b2842"))`
-      // produces the correct output: "アイウ"
-      // oxlint-disable-next-line vitest/no-disabled-tests
-      it.skip("decodes back to full-width katakana", () => {
-        expect(iso_2022_jp.decode(iso_2022_jp.encode("ｱｲｳ"))).toBe("アイウ");
       });
     });
 
