@@ -5,6 +5,10 @@ const encode: Encoder = (input, options) =>
   utf_16_encode(input, { ...options, endianness: "little-endian" });
 
 const decode: Decoder = (input, options) =>
-  utf_16_decode(input, { ...options, endianness: "little-endian" });
+  utf_16_decode(input, {
+    ...options,
+    endianness: "little-endian",
+    detectEndianness: false,
+  });
 
 export { encode, decode };

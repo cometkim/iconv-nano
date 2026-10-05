@@ -5,6 +5,7 @@ import type {
   Encoder,
   Endianness,
 } from "../interfaces.js";
+import { detectEndianness } from "../utils/detectEndianness.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
 
 const BYTE_ORDER_MARK = 0xfeff; // BOM in UTF-16
@@ -40,12 +41,15 @@ const encode: Encoder<EncodeOptions & { endianness?: Endianness }> = (
   return data;
 };
 
-const decode: Decoder<DecodeOptions & { endianness?: Endianness }> = (
-  input,
-  decodeOptions,
-) => {
+const decode: Decoder<
+  DecodeOptions & { endianness?: Endianness; detectEndianness?: boolean }
+> = (input, decodeOptions) => {
+  const detectedEndianness = decodeOptions?.detectEndianness
+    ? detectEndianness(input)
+    : undefined;
   const stripBOM = decodeOptions?.stripBOM ?? true;
-  const endianness = decodeOptions?.endianness ?? "little-endian";
+  const endianness =
+    detectedEndianness ?? decodeOptions?.endianness ?? "little-endian";
 
   return getCachedTextDecoder(
     endianness === "little-endian" ? "utf-16le" : "utf-16be",
