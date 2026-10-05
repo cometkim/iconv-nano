@@ -28,7 +28,6 @@ const tsdownConfig: UserConfig = defineConfig({
   publint: true,
   attw: {
     profile: "esm-only",
-    ignoreRules: ["no-resolution"],
   },
   // Does not support "types" package.json export condition
   // https://github.com/rolldown/tsdown/issues/875
