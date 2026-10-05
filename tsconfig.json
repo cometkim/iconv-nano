@@ -27,7 +27,8 @@
 
     /* Language and Environment */
     "moduleDetection": "force",
-    "target": "esnext",
+    "lib": ["ES2023", "ESNext.TypedArrays"],
+    "target": "es2023",
 
     /* Projects */
     "incremental": false,

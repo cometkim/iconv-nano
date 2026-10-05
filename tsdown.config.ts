@@ -4,7 +4,7 @@ import { defineConfig, type UserConfig } from "tsdown";
 const tsdownConfig: UserConfig = defineConfig({
   entry: ["src/**/*.ts", "!src/**/*.test.ts"],
   platform: "neutral",
-  target: "esnext",
+  target: "es2023",
   treeshake: true,
   plugins: [
     {
