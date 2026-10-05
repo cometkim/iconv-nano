@@ -1,5 +1,15 @@
 # iconv-nano
 
+## 0.0.5
+
+### Patch Changes
+
+- [`eacf4c5`](https://github.com/jeremy-code/iconv-nano/commit/eacf4c508a897ae0a8eb790e04f751c1173a3ed6) Thanks [@jeremy-code](https://github.com/jeremy-code)! - refactor: simplify encode function in UTF-16 codec
+
+- [`b5a91c3`](https://github.com/jeremy-code/iconv-nano/commit/b5a91c37b632f9a715c7ca732774c8bf1158a194) Thanks [@jeremy-code](https://github.com/jeremy-code)! - fix: set correct TextDecoder label in x-user-defined codec
+
+- [`1eba5bc`](https://github.com/jeremy-code/iconv-nano/commit/1eba5bcf95b07b20b09f5721bb0f897dec58e278) Thanks [@jeremy-code](https://github.com/jeremy-code)! - chore: update target to ES2022
+
 ## 0.0.4
 
 ### Patch Changes
