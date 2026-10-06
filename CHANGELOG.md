@@ -1,5 +1,16 @@
 # iconv-nano
 
+## 0.0.6
+
+### Patch Changes
+
+- [`b6f04ac`](https://github.com/jeremy-code/iconv-nano/commit/b6f04ac720e2024d000fe9bb23421bb082c70392) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: add detectEndianness option to UTF-16 decoder
+
+  - Create detectEndianness utility function
+  - Add detectEndianness option: when enabled, detects endianness from bytes
+
+- [`772addd`](https://github.com/jeremy-code/iconv-nano/commit/772addd879d865f4c621d029bed72772a03749ae) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: enhance UTF-8 decoder to handle BOM stripping
+
 ## 0.0.5
 
 ### Patch Changes
