@@ -3,12 +3,11 @@ import { defineConfig, type ViteUserConfig } from "vitest/config";
 
 const vitestConfig: ViteUserConfig = defineConfig({
   test: {
-    include: ["src/**/*.test.ts"],
     environment: "node",
     coverage: {
       provider: "v8",
       include: ["src/**/*.ts"],
-      exclude: ["src/**/*.test.ts", "src/interfaces.ts"],
+      exclude: ["src/interfaces.ts"],
       reporter: ["text"],
     },
     browser: {
@@ -17,6 +16,7 @@ const vitestConfig: ViteUserConfig = defineConfig({
       instances: [{ browser: "chromium" }],
       headless: true,
       ui: false,
+      screenshotFailures: false,
     },
   },
 });
