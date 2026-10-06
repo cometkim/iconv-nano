@@ -77,9 +77,7 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
       buf.set(TABLE[codePoint]!, byteOffset);
       byteOffset += 2;
     } else {
-      let pointer = (gb18030 as Record<string, number>)[
-        String.fromCodePoint(codePoint)
-      ];
+      let pointer = (gb18030 as Record<string, number>)[char];
 
       if (pointer !== undefined) {
         const leading = Math.floor(pointer / 190) + 0x81;

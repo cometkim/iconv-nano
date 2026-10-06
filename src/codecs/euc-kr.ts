@@ -14,9 +14,7 @@ const encode: Encoder = (input) => {
       buf[byteOffset] = codePoint;
       byteOffset++;
     } else {
-      const pointer = (euc_kr as Record<string, number>)[
-        String.fromCodePoint(codePoint)
-      ]!;
+      const pointer = (euc_kr as Record<string, number>)[char]!;
       if (pointer === undefined) {
         buf[byteOffset] = 0x3f; // ?
         byteOffset++;

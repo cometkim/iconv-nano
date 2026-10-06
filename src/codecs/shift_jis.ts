@@ -26,6 +26,7 @@ const encode: Encoder = (input) => {
       if (codePoint === 0x2212 /* − */) {
         codePoint = 0xff0d; // －
       }
+      // Since codePoint is mutable, cannot use char here
       const pointer = (shift_jis as Record<string, number>)[
         String.fromCodePoint(codePoint)
       ];

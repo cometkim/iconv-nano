@@ -16,8 +16,8 @@ const encodeSingleByteEncoding = (
     const codePoint = char.codePointAt(0)!;
     if (isAsciiCodePoint(codePoint)) {
       buf[byteOffset] = codePoint;
-    } else if (String.fromCodePoint(codePoint) in encodingIndex) {
-      buf[byteOffset] = 0x80 + encodingIndex[String.fromCodePoint(codePoint)]!;
+    } else if (char in encodingIndex) {
+      buf[byteOffset] = 0x80 + encodingIndex[char]!;
     } else {
       buf[byteOffset] = 0x3f; // ?
     }
