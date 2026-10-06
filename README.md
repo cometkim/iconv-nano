@@ -376,6 +376,16 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
   </tbody>
 </table>
 
+## Compatibility
+
+This library relies on the [`TextDecoder`](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder) API for decoding. The encoding APIs enjoy wide support in most JavaScript runtimes, being avaliable since March 2017 in all major browsers, supported since Node.js 11.0.0, and by Deno and Bun v1.[^1] If you look at the [web-platform-tests for encoding](https://wpt.fyi/results/encoding), browsers are in general spec-compliant in regards to their encoding implementations.
+
+In regards to server runtimes, I tested them on the TextDecoder portions of tests by web-platform-tests for encoding. Deno (v2.9.7) passed all tests. Bun (v1.4.2) failed one test ([fatal stream: iso-2022-jp](https://github.com/web-platform-tests/wpt/blob/788584597a223265879760fd2633f7859d09e5ad/encoding/textdecoder-mistakes.any.js#L671-L688)) though not on a part of the API this library touches. As of Node.js v26.10.0, the following encodings seem to have issues: ISO-2022-JP, Big5, EUC-JP, EUC-KR, Shift_JIS. For those encodings, consider using a TextDecoder polyfill such as [@exodus/bytes](https://npmjs.com/@exodus/bytes).
+
+For a detailed table of encoding API support across runtimes, please see this [spreadsheet](https://docs.google.com/spreadsheets/d/1pdEefRG6r9fZy61WHGz0TKSt8cO4ISWqlpBN5KntIvQ/edit) by [ChALkeR](https://github.com/ChALkeR), creator of [@exodus/bytes](https://npmjs.com/@exodus/bytes).
+
+[^1]: https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder#browser_compatibility
+
 ## Notes
 
 I'm waiting on ESM [namespace imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#namespace_import) in Rolldown ([rolldown/rolldown#7874](https://github.com/rolldown/rolldown/issues/7874)) to be supported. It looks like it will be coming on Rolldown 1.4. While tree-shaking will still work for encodings, the individual `encode`/`decode` functions cannot be treeshook until this is resolved.
