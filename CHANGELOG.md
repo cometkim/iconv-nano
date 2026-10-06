@@ -1,5 +1,11 @@
 # iconv-nano
 
+## 0.0.7
+
+### Patch Changes
+
+- [`d2a8902`](https://github.com/jeremy-code/iconv-nano/commit/d2a8902ba16e63c3bdd6c60f0b3fb41bd217f2b1) Thanks [@jeremy-code](https://github.com/jeremy-code)! - fix: optimize character lookup in encoding functions
+
 ## 0.0.6
 
 ### Patch Changes
