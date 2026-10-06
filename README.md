@@ -7,8 +7,10 @@
 [npm-package]: https://www.npmjs.com/package/iconv-nano
 [code-coverage-badge]: https://codecov.io/github/jeremy-code/iconv-nano/graph/badge.svg
 [code-coverage]: https://codecov.io/github/jeremy-code/iconv-nano
+[npm-package-size-badge]: https://badgen.net/packagephobia/install/iconv-nano
+[npm-package-size]: https://packagephobia.com/result?p=iconv-nano
 
-[![GitHub Actions][github-actions-badge]][github-actions] [![License][license-badge]](LICENSE) [![NPM version][npm-version-badge]][npm-package] [![Code coverage][code-coverage-badge]][code-coverage]
+[![GitHub Actions][github-actions-badge]][github-actions] [![License][license-badge]](LICENSE) [![NPM version][npm-version-badge]][npm-package] [![Code coverage][code-coverage-badge]][code-coverage] [![NPM package size][npm-package-size-badge]][npm-package-size]
 
 Documentation is avaliable at this URL: https://npmx.dev/package-docs/iconv-nano.
 
