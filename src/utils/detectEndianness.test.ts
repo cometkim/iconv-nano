@@ -22,6 +22,11 @@ describe("detectEndianness", () => {
     expect(detectEndianness(new Uint8Array())).toBe(undefined);
   });
 
+  it("returns undefined on single byte buffer", () => {
+    expect(detectEndianness(new Uint8Array([0xff]))).toBe(undefined);
+    expect(detectEndianness(new Uint8Array([0xfe]))).toBe(undefined);
+  });
+
   it("returns undefined on input without byte order mark", () => {
     expect(detectEndianness(textEncoder.encode("Hello world!"))).toBe(
       undefined,
