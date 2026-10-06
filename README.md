@@ -10,10 +10,6 @@
 
 [![GitHub Actions][github-actions-badge]][github-actions] [![License][license-badge]](LICENSE) [![NPM version][npm-version-badge]][npm-package] [![Code coverage][code-coverage-badge]][code-coverage]
 
-You probably shouldn't use this for now.
-
-I'm waiting on ESM [namespace imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#namespace_import) in Rolldown ([rolldown/rolldown#7874](https://github.com/rolldown/rolldown/issues/7874)) to be supported. It looks like it will be coming on Rolldown 1.4. While tree-shaking will still work for encodings, the individual `encode`/`decode` functions cannot be treeshook until this is resolved.
-
 Documentation is avaliable at this URL: https://npmx.dev/package-docs/iconv-nano.
 
 ## Usage
@@ -32,6 +28,45 @@ iconv.utf16.decode(Uint8Array.fromHex("3dd805de")); // "😅"
 
 iconv.shift_jis.encode("文字化け"); // "95b68e9a89bb82af"
 iconv.shift_jis.decode(Uint8Array.fromHex("95b68e9a89bb82af")); // "文字化け"
+```
+
+The [namespace import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#namespace_import) is important for tree-shaking since it allows you to selectively choose which encodings to use while still being statically analyzable.
+
+If you need string labels for encoding and still want the benefits of tree-shaking, you can do that with a constant like this:
+
+```ts
+import * as iconv from "iconv-nano";
+
+const CODECS = {
+  ascii: iconv.ascii,
+  shift_jis: iconv.shift_jis,
+  utf_8: iconv.utf_8,
+  utf_16le: iconv.utf_16le,
+};
+
+type Encoding = keyof typeof CODECS;
+
+const getBytes = (
+  input: string,
+  encoding: Encoding,
+): Uint8Array<ArrayBuffer> => {
+  return CODECS[encoding].encode(input);
+};
+```
+
+While I don't recommend it, since it will bring ALL encodings into your bundle, you can use stringly-typed labels to get any codec like this:
+
+```ts
+import * as iconv from "iconv-nano";
+
+type Encoding = keyof typeof import("iconv-nano");
+
+const getBytes = (
+  input: string,
+  encoding: Encoding,
+): Uint8Array<ArrayBuffer> => {
+  return iconv[encoding].encode(input);
+};
 ```
 
 ## Supported encodings
@@ -338,6 +373,10 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
     </tr>
   </tbody>
 </table>
+
+## Notes
+
+I'm waiting on ESM [namespace imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#namespace_import) in Rolldown ([rolldown/rolldown#7874](https://github.com/rolldown/rolldown/issues/7874)) to be supported. It looks like it will be coming on Rolldown 1.4. While tree-shaking will still work for encodings, the individual `encode`/`decode` functions cannot be treeshook until this is resolved.
 
 ## License
 
