@@ -11,7 +11,7 @@
   ],
   "homepage": "https://github.com/jeremy-code/iconv-nano#readme",
   "bugs": "https://github.com/jeremy-code/iconv-nano/issues",
-  "license": "MIT",
+  "license": "BSD-2-Clause",
   "author": "Jeremy Nguyen <hi@jeremy.ng> (https://jeremy.ng/)",
   "repository": {
     "type": "git",
