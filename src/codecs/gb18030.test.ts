@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import gb18030_encoding from "../../encodings/gb18030.json" with { type: "json" };
 import * as gb18030 from "./gb18030.js";
 
 describe("gb18030", () => {
@@ -109,6 +110,23 @@ describe("gb18030", () => {
           new Uint8Array([0x3f]),
         );
       });
+    });
+  });
+
+  describe("survives roundtrip conversion", () => {
+    it.for(
+      Object.entries({
+        ASCII: Array.from({ length: 0x7f }, (_, i) =>
+          String.fromCharCode(i),
+        ).join(""),
+        "GB 18030": Object.keys(gb18030_encoding).join(""),
+        // These code points intentionally do not survive roundtrip conversion
+        // "compatibility table": String.fromCodePoint(...[Array.from({ length: 0xe796 - 0xe78d + 1 }, (_, i) => 0xe78d + i),  [0xe81e, 0xe826, 0xe82b, 0xe82c, 0xe832, 0xe843, 0xe854, 0xe864]].flat()),
+      }),
+    )("%s", ([, input]) => {
+      const encodedInput = gb18030.encode(input);
+
+      expect(gb18030.decode(encodedInput)).toBe(input);
     });
   });
 });
