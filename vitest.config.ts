@@ -7,7 +7,6 @@ const vitestConfig: ViteUserConfig = defineConfig({
     coverage: {
       provider: "v8",
       include: ["src/**/*.ts"],
-      exclude: ["src/interfaces.ts"],
       reporter: ["text"],
     },
     browser: {
