@@ -5,6 +5,8 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs, type ParseArgsOptionsConfig } from "node:util";
 
+import { format } from "oxfmt";
+
 type Indexes = Record<string, (number | null)[]>;
 
 const ENCODINGS_DIR = fileURLToPath(new URL("../encodings", import.meta.url));
@@ -114,10 +116,12 @@ const main = async () => {
   });
 
   await Promise.all(
-    encodings.map(({ encoding, data }) =>
-      writeFile(join(ENCODINGS_DIR, `${encoding}.json`), JSON.stringify(data), {
-        encoding: "utf-8",
-      }),
+    encodings.map(async ({ encoding, data }) =>
+      writeFile(
+        join(ENCODINGS_DIR, `${encoding}.json`),
+        (await format(`${encoding}.json`, JSON.stringify(data))).code,
+        { encoding: "utf-8" },
+      ),
     ),
   );
   console.log(`Encodings updated!`);
