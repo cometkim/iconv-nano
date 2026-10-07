@@ -28,5 +28,87 @@ describe("gb18030", () => {
         ),
       );
     });
+
+    it("encodes ASCII", () => {
+      expect(gb18030.encode("Hello")).toEqual(Uint8Array.fromHex("48656c6c6f"));
+    });
+
+    it("encodes GB18030 two-byte characters", () => {
+      expect(gb18030.encode("你好世界")).toEqual(
+        Uint8Array.fromHex("c4e3bac3cac0bde7"),
+      );
+    });
+
+    it("encodes a mixture of ASCII and two-byte characters", () => {
+      expect(gb18030.encode("Hello 世界!")).toEqual(
+        Uint8Array.fromHex("48656c6c6f20cac0bde721"),
+      );
+    });
+
+    it("encodes a four-byte GB18030 character", () => {
+      // U+10000 -> 90 30 81 30
+      expect(gb18030.encode("\u{10000}")).toEqual(
+        Uint8Array.fromHex("90308130"),
+      );
+      expect(gb18030.encode("\u0080")).toEqual(Uint8Array.fromHex("81308130"));
+    });
+
+    it("encodes an astral Unicode character using four-byte GB18030", () => {
+      // U+1F600 GRINNING FACE -> 94 39 FC 36
+      expect(gb18030.encode("😀")).toEqual(
+        new Uint8Array([0x94, 0x39, 0xfc, 0x36]),
+      );
+    });
+
+    it("encodes U+E7C7 correctly", () => {
+      // U+E7C7 -> pointer 7457 -> 81 35 F4 37
+      expect(gb18030.encode("\uE7C7")).toEqual(
+        new Uint8Array([0x81, 0x35, 0xf4, 0x37]),
+      );
+    });
+
+    it("encodes characters from the explicit compatibility table", () => {
+      expect(gb18030.encode("\uE78D")).toEqual(new Uint8Array([0xa6, 0xd9]));
+
+      expect(gb18030.encode("\uE81E")).toEqual(new Uint8Array([0xfe, 0x59]));
+
+      expect(gb18030.encode("\uE864")).toEqual(new Uint8Array([0xfe, 0xa0]));
+    });
+
+    it("encodes U+E5E5 as ?", () => {
+      expect(gb18030.encode("\uE5E5")).toEqual(new Uint8Array([0x3f]));
+    });
+
+    it("encodes unknown characters using four-byte GB18030", () => {
+      expect(gb18030.encode("\u{20000}")).toEqual(
+        Uint8Array.fromHex("95328236"),
+      );
+    });
+
+    describe("GBK", () => {
+      it("encodes € as 0x80", () => {
+        expect(gb18030.encode("€", { isGBK: true })).toEqual(
+          new Uint8Array([0x80]),
+        );
+      });
+
+      it("encodes unsupported characters as ?", () => {
+        expect(gb18030.encode("\u{1f600}", { isGBK: true })).toEqual(
+          new Uint8Array([0x3f]),
+        );
+      });
+
+      it("encodes GBK-compatible characters", () => {
+        expect(gb18030.encode("你好", { isGBK: true })).toEqual(
+          new Uint8Array([0xc4, 0xe3, 0xba, 0xc3]),
+        );
+      });
+
+      it("encodes U+E5E5 as ?", () => {
+        expect(gb18030.encode("\uE5E5", { isGBK: true })).toEqual(
+          new Uint8Array([0x3f]),
+        );
+      });
+    });
   });
 });
