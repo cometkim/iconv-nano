@@ -277,11 +277,11 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
       <td>
         <a href="https://en.wikipedia.org/wiki/GBK_(character_encoding)">GBK</a>
       </td>
-      <td>gb18030</td>
+      <td>GBK</td>
     </tr>
     <tr>
-      <td><a href="https://en.wikipedia.org/wiki/GB_18030">gb18030</a></td>
-      <td>gbk</td>
+      <td><a href="https://en.wikipedia.org/wiki/GB_18030">GB 18030</a></td>
+      <td>gb18030</td>
     </tr>
     <tr>
       <td colspan="2">
