@@ -37,7 +37,7 @@
     "dev": "tsdown --watch",
     "build": "tsdown",
     "lint": "oxlint",
-    "lint:fix": "oxlint --run",
+    "lint:fix": "oxlint --fix",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "typecheck": "tsc --noEmit",
