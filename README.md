@@ -386,4 +386,4 @@ I'm waiting on ESM [namespace imports](https://developer.mozilla.org/en-US/docs/
 
 ## License
 
-This project is licensed under the MIT license. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the BSD-2 Clause license. See the [LICENSE](LICENSE) file for details.
