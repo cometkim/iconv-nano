@@ -349,12 +349,6 @@ All encodings supported by the [WHATWG Encoding standard](https://encoding.spec.
     </tr>
     <tr>
       <td>
-        <a href="https://encoding.spec.whatwg.org/#replacement">replacement</a>
-      </td>
-      <td>replacement</td>
-    </tr>
-    <tr>
-      <td>
         <a href="https://en.wikipedia.org/wiki/UTF-16#UTF-16BE">UTF-16BE</a>
       </td>
       <td>utf_16be</td>
