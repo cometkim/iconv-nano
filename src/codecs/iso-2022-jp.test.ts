@@ -432,14 +432,30 @@ describe("ISO-2022-JP", () => {
   });
 
   describe("survives roundtrip conversion", () => {
-    it("ASCII", () => {
-      const input = Array.from({ length: 0x7f }, (_, i) => i)
-        .filter((codePoint) => ![0x0e, 0x0f, 0x1b].includes(codePoint))
-        .map((codePoint) => String.fromCharCode(codePoint))
-        .join("");
+    it.for(
+      Object.entries({
+        ASCII: Array.from({ length: 0x7f }, (_, i) => i)
+          .filter((codePoint) => ![0x0e, 0x0f, 0x1b].includes(codePoint))
+          .map((codePoint) => String.fromCharCode(codePoint))
+          .join(""),
+        "ISO-2022-JP katakana index":
+          Object.keys(iso_2022_jp_katakana).join(""),
+      }),
+    )("%s", ([, input]) => {
+      const encodedInput = iso_2022_jp.encode(input);
 
-      expect(iso_2022_jp.decode(iso_2022_jp.encode(input))).toBe(input);
+      expect(iso_2022_jp.decode(encodedInput)).toBe(input);
     });
-    // TODO: Test other roundtrip conversions?
+
+    it("JIS0208 index", async () => {
+      const input = Object.keys(jis0208).join("");
+      const encodedInput = iso_2022_jp.encode(input);
+
+      // I believe this bug is related to a Chromium bug involving ISO-2022-JP
+      // state, where using a cached TextDecoder will retain state and thus, the
+      // output will append the unicode replacement character ("\ufffd")
+      // https://issues.chromium.org/issues/467624168
+      expect(new TextDecoder("iso-2022-jp").decode(encodedInput)).toBe(input);
+    });
   });
 });
