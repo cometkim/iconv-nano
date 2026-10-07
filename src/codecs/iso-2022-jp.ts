@@ -11,8 +11,8 @@ let katakanaByIndex: string[] | undefined;
 const getKatakanaByIndex = (): Exclude<typeof katakanaByIndex, undefined> => {
   if (katakanaByIndex === undefined) {
     katakanaByIndex = [];
-    for (const [char, index] of Object.entries(iso_2022_jp_katakana)) {
-      katakanaByIndex[index] = char;
+    for (const [kana, index] of Object.entries(iso_2022_jp_katakana)) {
+      katakanaByIndex[index] = kana;
     }
   }
   return katakanaByIndex;
