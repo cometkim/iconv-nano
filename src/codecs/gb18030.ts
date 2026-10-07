@@ -45,6 +45,7 @@ const getGb18030RangesPointer = (codePoint: number) => {
     }
   }
 
+  /* v8 ignore next -- all non-ASCII Unicode code points are covered by the GB18030 ranges */
   if (rangeIndex === undefined) {
     throw new Error("Somehow, no range was found");
   }
@@ -59,7 +60,7 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
   encodeOptions,
 ) => {
   let isGBK = encodeOptions?.isGBK ?? false;
-  const buf = new Uint8Array(input.length * 2);
+  const buf = new Uint8Array(input.length * 4);
   let byteOffset = 0;
 
   for (const char of input) {
@@ -100,7 +101,7 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
       pointer = pointer % (10 * 126 * 10);
       const byte2 = Math.floor(pointer / (10 * 126));
       pointer = pointer % (10 * 126);
-      const byte3 = pointer / 10;
+      const byte3 = Math.floor(pointer / 10);
       const byte4 = pointer % 10;
       buf.set(
         [byte1 + 0x81, byte2 + 0x30, byte3 + 0x81, byte4 + 0x30],
