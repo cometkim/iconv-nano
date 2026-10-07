@@ -3,6 +3,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseArgs, type ParseArgsOptionsConfig } from "node:util";
 
 type Indexes = Record<string, (number | null)[]>;
 
@@ -17,7 +18,17 @@ const parseEncodingIndexArray = (encodingIndexArray: Indexes[keyof Indexes]) =>
     return acc;
   }, {});
 
+const generateEncodingsOptions = {
+  force: {
+    type: "boolean",
+    short: "f",
+    default: false,
+  },
+} satisfies ParseArgsOptionsConfig;
+
 const main = async () => {
+  const parsedArgs = parseArgs({ options: generateEncodingsOptions });
+
   console.log("Fetching indexes.json from whatwg/encoding...");
   const responses = await fetch(
     `https://raw.githubusercontent.com/whatwg/encoding/refs/heads/main/indexes.json`,
@@ -31,18 +42,23 @@ const main = async () => {
   ]);
   console.log("Fetched!");
 
-  console.log("Checking indexes.sha256...");
-  const currSha256Hash = await readFile(join(ENCODINGS_DIR, `indexes.sha256`), {
-    encoding: "utf-8",
-  })
-    .then((hash) => hash.split(/\s+/)[0])
-    .catch(() => undefined);
+  if (!parsedArgs.values.force) {
+    console.log("Checking indexes.sha256...");
+    const currSha256Hash = await readFile(
+      join(ENCODINGS_DIR, `indexes.sha256`),
+      {
+        encoding: "utf-8",
+      },
+    )
+      .then((hash) => hash.split(/\s+/)[0])
+      .catch(() => undefined);
 
-  if (currSha256Hash === sha256Hash) {
-    console.log(
-      `indexes.json has not been modified since it was last processed. SHA-256 hash: ${sha256Hash}`,
-    );
-    return;
+    if (currSha256Hash === sha256Hash) {
+      console.log(
+        `indexes.json has not been modified since it was last processed. SHA-256 hash: ${sha256Hash}`,
+      );
+      return;
+    }
   }
 
   await writeFile(
