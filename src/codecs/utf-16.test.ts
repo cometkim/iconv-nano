@@ -63,11 +63,32 @@ describe("UTF-16", () => {
           ),
         );
       });
+      it("defaults to little endian", () => {
+        const input = "Hello world!😀🚀🧑‍🧑‍🧒‍🧒";
+        expect(utf_16.encode(input)).toEqual(
+          utf_16.encode(input, {
+            endianness: "little-endian",
+          }),
+        );
+      });
     });
   });
 
   describe("decode", () => {
     describe("addBOM", () => {
+      it("defaults to true", () => {
+        expect(
+          utf_16.decode(new Uint8Array([0xff, 0xfe]), {
+            endianness: "little-endian",
+          }),
+        ).toEqual("");
+        expect(
+          utf_16.decode(new Uint8Array([0xfe, 0xff]), {
+            stripBOM: true,
+            endianness: "big-endian",
+          }),
+        ).toEqual("");
+      });
       it("strips byte order mark when true", () => {
         expect(
           utf_16.decode(new Uint8Array([0xff, 0xfe]), {

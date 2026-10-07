@@ -20,6 +20,11 @@ describe("UTF-8", () => {
 
   describe("decode", () => {
     describe("stripBOM", () => {
+      it("defaults to true", () => {
+        expect(utf_8.decode(utf_8.encode("\ufeffHello world!"))).toBe(
+          "Hello world!",
+        );
+      });
       it("strips BOM when true", () => {
         expect(
           utf_8.decode(utf_8.encode("\ufeffHello world!"), {
@@ -33,6 +38,16 @@ describe("UTF-8", () => {
             stripBOM: false,
           }),
         ).toBe("\ufeffHello world!");
+      });
+    });
+
+    describe("handles buffer sources", () => {
+      it("ArrayBuffer", () => {
+        expect(
+          utf_8.decode(utf_8.encode("\ufeffHello world!").buffer, {
+            stripBOM: true,
+          }),
+        ).toBe("Hello world!");
       });
     });
   });
