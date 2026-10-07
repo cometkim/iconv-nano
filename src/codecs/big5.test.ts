@@ -4,36 +4,44 @@ import big5_encoding from "../../encodings/big5.json" with { type: "json" };
 import * as big5 from "./big5.js";
 
 describe("Big5", () => {
-  it("correctly encodes sample inputs", () => {
-    // python3 -c 'print("我愛你".encode("big5").hex())'
-    expect(big5.encode("我愛你")).toEqual(Uint8Array.fromHex("a7dab752a741"));
+  describe("encode", () => {
+    it("correctly encodes sample inputs", () => {
+      // python3 -c 'print("我愛你".encode("big5").hex())'
+      expect(big5.encode("我愛你")).toEqual(Uint8Array.fromHex("a7dab752a741"));
 
-    // python3 -c 'print("大五碼（英語：Big5，又稱五大專案碼、五大碼）是繁体中文社群最常用的電腦漢字字符集標準，共收錄13060個漢字。".encode("big5").hex())'
-    // https://zh.wikipedia.org/wiki/%E5%A4%A7%E4%BA%94%E7%A2%BC
-    expect(
-      big5.encode(
-        "大五碼（英語：Big5，又稱五大專案碼、五大碼）是繁体中文社群最常用的電腦漢字字符集標準，共收錄13060個漢字。",
-      ),
-    ).toEqual(
-      Uint8Array.fromHex(
-        "a46aa4adbd58a15dad5ebb79a14742696735a141a453bad9a4ada46ab14daed7bd58a142a4ada46abd58a15eac4fc163ca5ea4a4a4e5aac0b873b3ccb160a5ceaabab971b8a3ba7ea672a672b2c5b6b0bcd0b7c7a141a640a6acbffd3133303630add3ba7ea672a143",
-      ),
-    );
+      // python3 -c 'print("大五碼（英語：Big5，又稱五大專案碼、五大碼）是繁体中文社群最常用的電腦漢字字符集標準，共收錄13060個漢字。".encode("big5").hex())'
+      // https://zh.wikipedia.org/wiki/%E5%A4%A7%E4%BA%94%E7%A2%BC
+      expect(
+        big5.encode(
+          "大五碼（英語：Big5，又稱五大專案碼、五大碼）是繁体中文社群最常用的電腦漢字字符集標準，共收錄13060個漢字。",
+        ),
+      ).toEqual(
+        Uint8Array.fromHex(
+          "a46aa4adbd58a15dad5ebb79a14742696735a141a453bad9a4ada46ab14daed7bd58a142a4ada46abd58a15eac4fc163ca5ea4a4a4e5aac0b873b3ccb160a5ceaabab971b8a3ba7ea672a672b2c5b6b0bcd0b7c7a141a640a6acbffd3133303630add3ba7ea672a143",
+        ),
+      );
+    });
+
+    it("encodes unknown characters as ?", () => {
+      const input = "🧋";
+      const encodedInput = big5.encode(input);
+      expect(encodedInput).toEqual(big5.encode("?"));
+      expect(big5.decode(encodedInput)).toBe("?");
+    });
   });
 
-  it("survives roundtrip conversion", () => {
-    const input =
-      Array.from({ length: 0x7f }, (_, i) => String.fromCharCode(i)).join("") +
-      Object.keys(big5_encoding).join("");
-    const encodedInput = big5.encode(input);
+  describe("survives roundtrip conversion", () => {
+    it.for(
+      Object.entries({
+        ASCII: Array.from({ length: 0x7f }, (_, i) =>
+          String.fromCharCode(i),
+        ).join(""),
+        "Big5 index": Object.keys(big5_encoding).join(""),
+      }),
+    )("%s", ([, input]) => {
+      const encodedInput = big5.encode(input);
 
-    expect(big5.decode(encodedInput)).toBe(input);
-  });
-
-  it("encodes unknown characters as ?", () => {
-    const input = "🧋";
-    const encodedInput = big5.encode(input);
-    expect(encodedInput).toEqual(big5.encode("?"));
-    expect(big5.decode(encodedInput)).toBe("?");
+      expect(big5.decode(encodedInput)).toBe(input);
+    });
   });
 });

@@ -12,8 +12,8 @@ const isLittleEndianPlatform = () => {
 
 describe("UTF-16", () => {
   describe("encode", () => {
-    describe("byte order mark", () => {
-      it("encodes byte order mark", () => {
+    describe("addBOM", () => {
+      it("encodes byte order mark when true", () => {
         expect(
           utf_16.encode("", {
             addBOM: true,
@@ -27,7 +27,7 @@ describe("UTF-16", () => {
           }),
         ).toEqual(new Uint8Array([0xfe, 0xff]));
       });
-      it("does not encode byte order mark", () => {
+      it("does not encode byte order mark when false", () => {
         expect(
           utf_16.encode("", {
             addBOM: false,
@@ -43,92 +43,96 @@ describe("UTF-16", () => {
       });
     });
 
-    it("encodes input with system endianness correctly", () => {
-      const input = "Hello world!😀🚀🧑‍🧑‍🧒‍🧒";
-      expect(
-        utf_16.encode(input, {
-          addBOM: false,
-          endianness: isLittleEndianPlatform() ? "little-endian" : "big-endian",
-        }),
-      ).toEqual(
-        new Uint8Array(
-          new Uint16Array(
-            Array.from({ length: input.length }, (_, i) => input.charCodeAt(i)),
-          ).buffer,
-        ),
-      );
+    describe("endianness", () => {
+      it("encodes input with system endianness correctly", () => {
+        const input = "Hello world!😀🚀🧑‍🧑‍🧒‍🧒";
+        expect(
+          utf_16.encode(input, {
+            addBOM: false,
+            endianness: isLittleEndianPlatform()
+              ? "little-endian"
+              : "big-endian",
+          }),
+        ).toEqual(
+          new Uint8Array(
+            new Uint16Array(
+              Array.from({ length: input.length }, (_, i) =>
+                input.charCodeAt(i),
+              ),
+            ).buffer,
+          ),
+        );
+      });
     });
   });
 
   describe("decode", () => {
-    describe("byte order mark", () => {
-      describe("addBOM", () => {
-        it("strips byte order mark when true", () => {
-          expect(
-            utf_16.decode(new Uint8Array([0xff, 0xfe]), {
-              stripBOM: true,
-              endianness: "little-endian",
-            }),
-          ).toEqual("");
-          expect(
-            utf_16.decode(new Uint8Array([0xfe, 0xff]), {
-              stripBOM: true,
-              endianness: "big-endian",
-            }),
-          ).toEqual("");
-        });
-        it("does not strip byte order mark when false", () => {
-          expect(
-            utf_16.decode(new Uint8Array([0xff, 0xfe]), {
-              stripBOM: false,
-              endianness: "little-endian",
-            }),
-          ).toEqual("\ufeff");
-          expect(
-            utf_16.decode(new Uint8Array([0xfe, 0xff]), {
-              stripBOM: false,
-              endianness: "big-endian",
-            }),
-          ).toEqual("\ufeff");
-        });
+    describe("addBOM", () => {
+      it("strips byte order mark when true", () => {
+        expect(
+          utf_16.decode(new Uint8Array([0xff, 0xfe]), {
+            stripBOM: true,
+            endianness: "little-endian",
+          }),
+        ).toEqual("");
+        expect(
+          utf_16.decode(new Uint8Array([0xfe, 0xff]), {
+            stripBOM: true,
+            endianness: "big-endian",
+          }),
+        ).toEqual("");
       });
+      it("does not strip byte order mark when false", () => {
+        expect(
+          utf_16.decode(new Uint8Array([0xff, 0xfe]), {
+            stripBOM: false,
+            endianness: "little-endian",
+          }),
+        ).toEqual("\ufeff");
+        expect(
+          utf_16.decode(new Uint8Array([0xfe, 0xff]), {
+            stripBOM: false,
+            endianness: "big-endian",
+          }),
+        ).toEqual("\ufeff");
+      });
+    });
 
-      describe("detectEndianness", () => {
-        it("detects endianness when true", () => {
-          expect(
-            utf_16.decode(
-              utf_16.encode("Hello world!🌍😀🚀", {
-                endianness: "big-endian",
-                addBOM: true,
-              }),
-              {
-                detectEndianness: true,
-              },
-            ),
-          ).toBe("Hello world!🌍😀🚀");
-        });
-        it("does not detect endianness when false", () => {
-          expect(
-            utf_16.decode(
-              utf_16.encode("Hello world!🌍😀🚀", {
-                endianness: "big-endian",
-                addBOM: true,
-              }),
-              { detectEndianness: false },
-            ),
-          ).toBe("￾䠀攀氀氀漀 眀漀爀氀搀℀㳘ෟ㷘Þ㷘胞");
-        });
-        it("does not override endianness", () => {
-          expect(
-            utf_16.decode(
-              utf_16.encode("Hello world!🌍😀🚀", {
-                endianness: "big-endian",
-                addBOM: true,
-              }),
-              { endianness: "little-endian" },
-            ),
-          ).toBe("￾䠀攀氀氀漀 眀漀爀氀搀℀㳘ෟ㷘Þ㷘胞");
-        });
+    describe("detectEndianness", () => {
+      it("detects endianness when true", () => {
+        expect(
+          utf_16.decode(
+            utf_16.encode("Hello world!🌍😀🚀", {
+              endianness: "big-endian",
+              addBOM: true,
+            }),
+            {
+              detectEndianness: true,
+            },
+          ),
+        ).toBe("Hello world!🌍😀🚀");
+      });
+      it("does not detect endianness when false", () => {
+        expect(
+          utf_16.decode(
+            utf_16.encode("Hello world!🌍😀🚀", {
+              endianness: "big-endian",
+              addBOM: true,
+            }),
+            { detectEndianness: false },
+          ),
+        ).toBe("￾䠀攀氀氀漀 眀漀爀氀搀℀㳘ෟ㷘Þ㷘胞");
+      });
+      it("does not override endianness", () => {
+        expect(
+          utf_16.decode(
+            utf_16.encode("Hello world!🌍😀🚀", {
+              endianness: "big-endian",
+              addBOM: true,
+            }),
+            { endianness: "little-endian" },
+          ),
+        ).toBe("￾䠀攀氀氀漀 眀漀爀氀搀℀㳘ෟ㷘Þ㷘胞");
       });
     });
   });
