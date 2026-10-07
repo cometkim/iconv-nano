@@ -31,11 +31,11 @@ const encode: Encoder = (input) => {
   let byteOffset = 0;
   let encoderState: EncoderState = "ascii";
 
-  let i = 0;
-  while (i < input.length) {
-    let codePoint = input.codePointAt(i)!;
+  let index = 0;
+  while (index < input.length) {
+    let codePoint = input.codePointAt(index)!;
     const codePointWidth = codePoint > 0xffff ? 2 /* surrogate pair */ : 1;
-    i += codePointWidth;
+    index += codePointWidth;
 
     // STEP_3
     if (
@@ -77,7 +77,7 @@ const encode: Encoder = (input) => {
 
     // STEP_6
     if (isAsciiCodePoint(codePoint) && encoderState !== "ascii") {
-      i -= codePointWidth;
+      index -= codePointWidth;
       encoderState = "ascii";
       buf.set([0x1b, 0x28, 0x42], byteOffset);
       byteOffset += 3;
@@ -89,7 +89,7 @@ const encode: Encoder = (input) => {
       (codePoint === YEN_CODE_POINT || codePoint === OVERLINE_CODE_POINT) &&
       encoderState !== "roman"
     ) {
-      i -= codePointWidth;
+      index -= codePointWidth;
       encoderState = "roman";
       buf.set([0x1b, 0x28, 0x4a], byteOffset);
       byteOffset += 3;
@@ -114,7 +114,7 @@ const encode: Encoder = (input) => {
     // STEP_11
     if (pointer === undefined) {
       if (encoderState === "jis0208") {
-        i -= codePointWidth;
+        index -= codePointWidth;
         encoderState = "ascii";
         buf.set([0x1b, 0x28, 0x42], byteOffset);
         byteOffset += 3;
@@ -127,7 +127,7 @@ const encode: Encoder = (input) => {
 
     // STEP_12
     if (encoderState !== "jis0208") {
-      i -= codePointWidth;
+      index -= codePointWidth;
       encoderState = "jis0208";
       buf.set([0x1b, 0x24, 0x42], byteOffset);
       byteOffset += 3;
