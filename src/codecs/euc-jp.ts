@@ -24,12 +24,8 @@ const encode: Encoder = (input) => {
       buf[byteOffset + 1] = codePoint - 0xff61 + 0xa1;
       byteOffset += 2;
     } else {
-      if (codePoint === 0x2212 /* − */) {
-        codePoint = 0xff0d; // －
-      }
-      // Since codePoint is mutable, cannot use char here
       const pointer = (jis0208 as Record<string, number>)[
-        String.fromCodePoint(codePoint)
+        codePoint === 0x2212 /* − */ ? "\uff0d" /* － */ : char
       ];
       if (pointer === undefined) {
         buf[byteOffset] = 0x3f; // ?

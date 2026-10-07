@@ -9,7 +9,7 @@ const encode: Encoder = (input) => {
   let byteOffset = 0;
 
   for (const char of input) {
-    let codePoint = char.codePointAt(0)!;
+    const codePoint = char.codePointAt(0)!;
     if (isAsciiCodePoint(codePoint) || codePoint === 0x80) {
       buf[byteOffset] = codePoint;
       byteOffset++;
@@ -23,12 +23,8 @@ const encode: Encoder = (input) => {
       buf[byteOffset] = codePoint - 0xff61 + 0xa1;
       byteOffset++;
     } else {
-      if (codePoint === 0x2212 /* − */) {
-        codePoint = 0xff0d; // －
-      }
-      // Since codePoint is mutable, cannot use char here
       const pointer = (shift_jis as Record<string, number>)[
-        String.fromCodePoint(codePoint)
+        codePoint === 0x2212 /* − */ ? "\uff0d" /* － */ : char
       ];
       if (pointer === undefined) {
         buf[byteOffset] = 0x3f; // ?
