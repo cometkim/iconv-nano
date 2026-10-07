@@ -1,5 +1,20 @@
 # iconv-nano
 
+## 0.0.8
+
+### Patch Changes
+
+- [`453e8e4`](https://github.com/jeremy-code/iconv-nano/commit/453e8e44ed632ca9bd4525a80a08d39dddf3e0ca) Thanks [@jeremy-code](https://github.com/jeremy-code)! - fix: use char iterator for index in Shift_JIS and EUC-JP encoders
+
+  - Avoids unnecessary `String.fromCodePoint`
+
+- [`46afc92`](https://github.com/jeremy-code/iconv-nano/commit/46afc9209abc1a0d9b891da6b6b5782d07b88f07) Thanks [@jeremy-code](https://github.com/jeremy-code)! - fix: increase buffer size for GB18030 encoding
+
+- [`205e0f4`](https://github.com/jeremy-code/iconv-nano/commit/205e0f407c6174896a410aac6ccbf2f0ec5c4b58) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: remove replacement codec
+
+  - Besides not really making sense to have an associated encoder, constructing
+    the decoder on Chrome throws an error
+
 ## 0.0.7
 
 ### Patch Changes
