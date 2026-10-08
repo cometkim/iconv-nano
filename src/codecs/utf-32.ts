@@ -5,6 +5,7 @@ import type {
   Encoder,
   Endianness,
 } from "../interfaces.js";
+import { detectEndianness } from "../utils/detectEndianness.js";
 
 const BYTE_ORDER_MARK = 0xfeff; // BOM
 
@@ -34,12 +35,15 @@ const encode: Encoder<EncodeOptions & { endianness?: Endianness }> = (
   return buf.slice(0, byteOffset);
 };
 
-const decode: Decoder<DecodeOptions & { endianness?: Endianness }> = (
-  input,
-  decodeOptions,
-) => {
+const decode: Decoder<
+  DecodeOptions & { endianness?: Endianness; detectEndianness?: boolean }
+> = (input, decodeOptions) => {
+  const detectedEndianness = decodeOptions?.detectEndianness
+    ? detectEndianness(input, 4)
+    : undefined;
   const stripBOM = decodeOptions?.stripBOM ?? true;
-  const endianness = decodeOptions?.endianness ?? "little-endian";
+  const endianness =
+    detectedEndianness ?? decodeOptions?.endianness ?? "little-endian";
 
   const dataView = ArrayBuffer.isView(input)
     ? new DataView(input.buffer, input.byteOffset, input.byteLength)
