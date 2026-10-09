@@ -1,5 +1,13 @@
 # iconv-nano
 
+## 0.0.9
+
+### Patch Changes
+
+- [`19c04a2`](https://github.com/jeremy-code/iconv-nano/commit/19c04a2bc0fddb81f01c41d637381d4f84091b9e) Thanks [@jeremy-code](https://github.com/jeremy-code)! - chore: add Codec type
+
+- [`95f2a33`](https://github.com/jeremy-code/iconv-nano/commit/95f2a338059ab3fed032e69153ad1eacf1542848) Thanks [@jeremy-code](https://github.com/jeremy-code)! - chore: add Encoding, CanonicalEncoding types
+
 ## 0.0.8
 
 ### Patch Changes
