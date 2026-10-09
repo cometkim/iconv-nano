@@ -46,8 +46,59 @@ import * as utf_16be from "./codecs/utf-16be.js";
 import * as utf_16le from "./codecs/utf-16le.js";
 import * as x_user_defined from "./codecs/x-user-defined.js";
 
+type Encoding = keyof typeof import(".");
+
+type CanonicalEncoding = Extract<
+  Encoding,
+  | "utf_8"
+  | "ibm866"
+  | "iso_8859_2"
+  | "iso_8859_3"
+  | "iso_8859_4"
+  | "iso_8859_5"
+  | "iso_8859_6"
+  | "iso_8859_7"
+  | "iso_8859_8_i"
+  | "iso_8859_8"
+  | "iso_8859_10"
+  | "iso_8859_11"
+  | "iso_8859_12"
+  | "iso_8859_13"
+  | "iso_8859_14"
+  | "iso_8859_15"
+  | "iso_8859_16"
+  | "koi8_r"
+  | "koi8_u"
+  | "macintosh"
+  | "windows_874"
+  | "windows_1250"
+  | "windows_1251"
+  | "windows_1252"
+  | "windows_1253"
+  | "windows_1254"
+  | "windows_1255"
+  | "windows_1256"
+  | "windows_1257"
+  | "windows_1258"
+  | "x_mac_cyrillic"
+  | "gb18030"
+  | "gbk"
+  | "big5"
+  | "euc_jp"
+  | "iso_2022_jp"
+  | "shift_jis"
+  | "euc_kr"
+  | "utf_16"
+  | "utf_16le"
+  | "utf_16be"
+  | "x_user_defined"
+>;
+
 // Aliases from https://encoding.spec.whatwg.org/#names-and-labels
 export {
+  type Encoding,
+  type CanonicalEncoding,
+
   // The Encoding
   utf_8,
   utf_8 as unicode_1_1_utf_8,

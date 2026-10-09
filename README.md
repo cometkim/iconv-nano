@@ -67,11 +67,9 @@ While I don't recommend it, since it will bring ALL encodings into your bundle, 
 ```ts
 import * as iconv from "iconv-nano";
 
-type Encoding = keyof typeof import("iconv-nano");
-
 const getBytes = (
   input: string,
-  encoding: Encoding,
+  encoding: iconv.Encoding,
 ): Uint8Array<ArrayBuffer> => {
   return iconv[encoding].encode(input);
 };
