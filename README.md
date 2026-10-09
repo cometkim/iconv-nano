@@ -50,7 +50,7 @@ const CODECS = {
   shift_jis: iconv.shift_jis,
   utf_8: iconv.utf_8,
   utf_16le: iconv.utf_16le,
-};
+} satisfies Partial<Record<iconv.Encoding, iconv.Codec>>;
 
 type Encoding = keyof typeof CODECS;
 

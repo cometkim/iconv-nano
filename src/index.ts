@@ -45,6 +45,12 @@ import * as utf_16 from "./codecs/utf-16.js";
 import * as utf_16be from "./codecs/utf-16be.js";
 import * as utf_16le from "./codecs/utf-16le.js";
 import * as x_user_defined from "./codecs/x-user-defined.js";
+import type {
+  DecodeOptions,
+  Decoder,
+  EncodeOptions,
+  Encoder,
+} from "./interfaces.js";
 
 type Encoding = keyof typeof import(".");
 
@@ -94,10 +100,19 @@ type CanonicalEncoding = Extract<
   | "x_user_defined"
 >;
 
+type Codec<
+  TEncodeOptions extends EncodeOptions = EncodeOptions,
+  TDecodeOptions extends DecodeOptions = DecodeOptions,
+> = {
+  encode: Encoder<TEncodeOptions>;
+  decode: Decoder<TDecodeOptions>;
+};
+
 // Aliases from https://encoding.spec.whatwg.org/#names-and-labels
 export {
   type Encoding,
   type CanonicalEncoding,
+  type Codec,
 
   // The Encoding
   utf_8,
