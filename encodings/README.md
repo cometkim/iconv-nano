@@ -11,5 +11,6 @@ Modifications were made to the original file based on the [WHATWG encoding spec 
 - [big5.json](./big5.json) was generated as described in the specification.
 - Single-byte encodings ([ibm866.json](./ibm866.json), `iso-8859-*.json`, `koi8-*.json`, `windows-*.json`, [x-mac-cyrillic.json](./x-mac-cyrillic.json)) were preserved as-is, except that holes were replaced with -1.
 - [iso-2022-jp-katakana.json](./iso-2022-jp-katakana.json) was preserved as-is.
+- [euc-kr.ts](./euc-kr.ts) is stored as a VLQ-encoded run-length payload (see `encodeVlqRunsPayload` in the generator, decoded at runtime by `src/utils/vlqRuns.ts`) instead of a plain reverse-index object. Encodings can opt in via `VLQ_RUNS_ENCODINGS`.
 
-The JSON files are imported by `iconv-nano` in the development code but are compiled into minified JavaScript files during build time.
+The encoding files are imported by `iconv-nano` in the development code but are compiled into minified JavaScript files during build time.
