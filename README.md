@@ -14,6 +14,12 @@
 
 Documentation is avaliable at this URL: https://npmx.dev/package-docs/iconv-nano.
 
+## Features
+
+- Tree-shakable
+- Isomorphic: uses Uint8Array and TextEncoder/TextDecoder APIs
+- Supports all WHATWG encodings
+
 ## Usage
 
 ```js
