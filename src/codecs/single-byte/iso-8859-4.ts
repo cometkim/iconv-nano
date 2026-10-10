@@ -1,10 +1,13 @@
 import iso_8859_4 from "../../../encodings/iso-8859-4.json" with { type: "json" };
 import type { Encoder, Decoder } from "../../interfaces.js";
+import { createIndexMap } from "../../utils/createIndexMap.js";
 import { encodeSingleByteEncoding } from "../../utils/encodeSingleByteEncoding.js";
 import { getCachedTextDecoder } from "../../utils/getCachedTextDecoder.js";
 
+const iso_8859_4_index = createIndexMap(iso_8859_4);
+
 const encode: Encoder = (input) => {
-  return encodeSingleByteEncoding(input, iso_8859_4);
+  return encodeSingleByteEncoding(input, iso_8859_4_index);
 };
 
 const decode: Decoder = (input, decodeOptions) => {
