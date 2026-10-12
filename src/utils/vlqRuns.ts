@@ -56,37 +56,68 @@ const decodeVlqRuns = (payload: VlqRunsPayload): VlqRuns => {
   return { cpStarts, ptrStarts, counts: runCounts };
 };
 
+type VlqRunsTable = {
+  /** block id per code point >> 8, -1 when the block has no mapped code point */
+  blockIds: Int32Array;
+  /** pointers laid out per 256-code-point block, 0xffff = unmapped */
+  table: Uint16Array;
+};
+
+// Builds an ICU-style two-stage table:
+// O(1) lookups costing ~0.1 ms of build time and 512 B per used 256-code-point block.
+// WHATWG index pointers stay below 0xffff, so it doubles as the unmapped sentinel.
+const buildVlqRunsTable = (runs: VlqRuns): VlqRunsTable => {
+  const { cpStarts, ptrStarts, counts } = runs;
+  const present = new Uint8Array(256);
+  for (let i = 0; i < cpStarts.length; i++) {
+    const firstBlock = cpStarts[i]! >> 8;
+    const lastBlock = (cpStarts[i]! + counts[i]! - 1) >> 8;
+    for (let block = firstBlock; block <= lastBlock; block++) {
+      present[block] = 1;
+    }
+  }
+  const blockIds = new Int32Array(256).fill(-1);
+  let usedBlocks = 0;
+  for (let block = 0; block < 256; block++) {
+    if (present[block] === 1) {
+      blockIds[block] = usedBlocks++;
+    }
+  }
+  const table = new Uint16Array(usedBlocks * 256).fill(0xffff);
+  for (let i = 0; i < cpStarts.length; i++) {
+    const cpStart = cpStarts[i]!;
+    const pointerStart = ptrStarts[i]!;
+    const count = counts[i]!;
+    for (let codePoint = cpStart; codePoint < cpStart + count; codePoint++) {
+      table[(blockIds[codePoint >> 8]! << 8) | (codePoint & 0xff)] =
+        pointerStart + (codePoint - cpStart);
+    }
+  }
+  return { blockIds, table };
+};
+
+type VlqRunsLookup = (codePoint: number) => number | null;
+
 /**
  * Decodes a VLQ runs payload and returns a lookup mapping code points to pointers,
  * or null when the code point is not in the index.
  *
- * The returned closure captures the columnar arrays and hoisted run count
- * so the binary search hot loop stays monomorphic
+ * The payload is materialized into a two-stage table
+ * (stage 1: block per code point >> 8, stage 2: pointer values)
+ * captured by the returned closure, so each lookup is two typed array loads.
  */
-const decodeVlqRunsLookup = (
-  payload: VlqRunsPayload,
-): ((codePoint: number) => number | null) => {
-  const { cpStarts, ptrStarts, counts } = decodeVlqRuns(payload);
-  const runCount = cpStarts.length;
+const decodeVlqRunsLookup = (payload: VlqRunsPayload): VlqRunsLookup => {
+  const { blockIds, table } = buildVlqRunsTable(decodeVlqRuns(payload));
   return (codePoint) => {
-    let lo = 0;
-    let hi = runCount;
-    while (lo < hi) {
-      const mid = (lo + hi) >> 1;
-      if (cpStarts[mid]! <= codePoint) {
-        lo = mid + 1;
-      } else {
-        hi = mid;
-      }
-    }
-    const last = lo - 1;
-    if (last < 0) {
+    if (codePoint > 0xffff) {
       return null;
     }
-    const cpStart = cpStarts[last]!;
-    return codePoint < cpStart + counts[last]!
-      ? ptrStarts[last]! + (codePoint - cpStart)
-      : null;
+    const block = blockIds[codePoint >> 8]!;
+    if (block < 0) {
+      return null;
+    }
+    const pointer = table[(block << 8) | (codePoint & 0xff)]!;
+    return pointer === 0xffff ? null : pointer;
   };
 };
 
