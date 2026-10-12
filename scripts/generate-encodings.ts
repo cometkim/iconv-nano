@@ -41,18 +41,13 @@ const encodeVlq = (n: number): string => {
   return s;
 };
 
-const encodeDeltas = (values: number[]): string => {
-  let prev = 0;
-  let s = "";
-  for (const v of values) {
-    s += encodeVlq(v - prev);
-    prev = v;
-  }
-  return s;
-};
-
-// Encodes a char -> pointer reverse index as code point-sorted runs [cpStart, pointerStart, count],
-// column delta + VLQ compressed into "<code point start deltas>.<pointer start deltas>.<counts>"
+// Encodes a char -> pointer reverse index as pointer-ordered runs [cpStart, pointerStart, count],
+//
+// VLQ compressed into
+// "<first code point>.<first pointer>.<cp gaps>.<counts>.<pointer gaps>"
+//
+// where each gap is the distance from the end of one run to the start of the next
+// (mostly 0 or small in regular index regions, so most tokens are a single character)
 const encodeVlqRunsPayload = (
   encodingIndex: Record<string, number>,
 ): string => {
@@ -74,13 +69,25 @@ const encodeVlqRunsPayload = (
     prevCp = cp;
     prevPtr = pointer;
   }
-  const order = cpStarts
-    .map((_, i) => i)
-    .toSorted(
-      (a, b) => cpStarts[a]! - cpStarts[b]! || ptrStarts[a]! - ptrStarts[b]!,
+  const runCount = counts.length;
+  const cpGaps: number[] = [];
+  const ptrGaps: number[] = [];
+  for (let i = 0; i < runCount; i++) {
+    const next = i + 1;
+    cpGaps.push(
+      next < runCount ? cpStarts[next]! - (cpStarts[i]! + counts[i]!) : 0,
     );
-  const column = <T>(values: T[]): T[] => order.map((i) => values[i]!);
-  return `${encodeDeltas(column(cpStarts))}.${encodeDeltas(column(ptrStarts))}.${column(counts).map(encodeVlq).join("")}`;
+    ptrGaps.push(
+      next < runCount ? ptrStarts[next]! - (ptrStarts[i]! + counts[i]!) : 0,
+    );
+  }
+  return [
+    encodeVlq(cpStarts[0]!),
+    encodeVlq(ptrStarts[0]!),
+    cpGaps.map(encodeVlq).join(""),
+    counts.map(encodeVlq).join(""),
+    ptrGaps.map(encodeVlq).join(""),
+  ].join(".");
 };
 
 const serializeEncodingData = (

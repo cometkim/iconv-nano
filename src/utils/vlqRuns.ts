@@ -30,7 +30,7 @@ const decodeVlqStream = (stream: string): number[] => {
 type VlqRunsPayload = string & { __type: "VlqRunsPayload" };
 
 type VlqRuns = {
-  /** first code point of each run, sorted */
+  /** first code point of each run (runs are pointer-ordered) */
   cpStarts: number[];
   /** first pointer of each run */
   ptrStarts: number[];
@@ -39,19 +39,24 @@ type VlqRuns = {
 };
 
 /**
- * Decodes a `<code point start deltas>.<pointer start deltas>.<counts>`
- * payload into columnar run arrays (runs are code point-sorted)
+ * Decodes a `<first code point>.<first pointer>.<cp gaps>.<counts>.<pointer gaps>` payload into columnar run arrays
+ * (runs are pointer-ordered; both gap columns hold the distance from the end of one run to the start of the next)
  */
 const decodeVlqRuns = (payload: VlqRunsPayload): VlqRuns => {
-  const [cpDeltas, ptrDeltas, counts] = payload.split(".");
-  const cpStarts = decodeVlqStream(cpDeltas!);
-  const ptrStarts = decodeVlqStream(ptrDeltas!);
+  const [firstCp, firstPtr, cpGaps, counts, ptrGaps] = payload.split(".");
   const runCounts = decodeVlqStream(counts!);
-  let cpStart = 0;
-  let ptrStart = 0;
+  const runCpGaps = decodeVlqStream(cpGaps!);
+  const runPtrGaps = decodeVlqStream(ptrGaps!);
+  const cpStarts: number[] = [];
+  const ptrStarts: number[] = [];
+  let cpStart = decodeVlqStream(firstCp!)[0]!;
+  let ptrStart = decodeVlqStream(firstPtr!)[0]!;
   for (let i = 0; i < runCounts.length; i++) {
-    cpStarts[i] = cpStart += cpStarts[i]!;
-    ptrStarts[i] = ptrStart += ptrStarts[i]!;
+    const count = runCounts[i]!;
+    cpStarts.push(cpStart);
+    ptrStarts.push(ptrStart);
+    cpStart += count + runCpGaps[i]!;
+    ptrStart += count + runPtrGaps[i]!;
   }
   return { cpStarts, ptrStarts, counts: runCounts };
 };
