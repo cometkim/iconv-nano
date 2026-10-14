@@ -1,10 +1,13 @@
 import windows_1252 from "../../../encodings/windows-1252.json" with { type: "json" };
 import type { Encoder, Decoder } from "../../interfaces.js";
+import { createIndexMap } from "../../utils/createIndexMap.js";
 import { encodeSingleByteEncoding } from "../../utils/encodeSingleByteEncoding.js";
 import { getCachedTextDecoder } from "../../utils/getCachedTextDecoder.js";
 
+const windows_1252_index = createIndexMap(windows_1252);
+
 const encode: Encoder = (input) => {
-  return encodeSingleByteEncoding(input, windows_1252);
+  return encodeSingleByteEncoding(input, windows_1252_index);
 };
 
 const decode: Decoder = (input, decodeOptions) => {

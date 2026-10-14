@@ -268,16 +268,12 @@ describe("ISO-2022-JP", () => {
       });
 
       it("maps every half-width katakana based on ISO-2022-JP katakana index", () => {
-        const fullWidth = Object.entries(iso_2022_jp_katakana).toSorted(
-          (a, b) => a[1] - b[1],
-        );
-
-        expect(fullWidth).toHaveLength(0xff9f - 0xff61 + 1);
-        for (const [char, index] of fullWidth) {
+        expect(iso_2022_jp_katakana).toHaveLength(0xff9f - 0xff61 + 1);
+        iso_2022_jp_katakana.map((kana, index) =>
           expect(
             iso_2022_jp.encode(String.fromCodePoint(0xff61 + index)),
-          ).toEqual(iso_2022_jp.encode(char));
-        }
+          ).toEqual(iso_2022_jp.encode(String.fromCharCode(kana))),
+        );
       });
     });
 
