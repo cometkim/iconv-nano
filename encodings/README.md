@@ -10,5 +10,6 @@ Modifications were made to the original file based on the [WHATWG encoding spec 
 - [shift_jis.json](./shift_jis.json) was generated based on the by modifying the index for jis0208.
 - [big5.json](./big5.json) was generated as described in the specification.
 - Single-byte encodings ([ibm866.json](./ibm866.json), `iso-8859-*.json`, `koi8-*.json`, `windows-*.json`, [x-mac-cyrillic.json](./x-mac-cyrillic.json)) were preserved as-is, except that holes were replaced with -1.
+- [iso-2022-jp-katakana.json](./iso-2022-jp-katakana.json) was preserved as-is.
 
 The JSON files are imported by `iconv-nano` in the development code but are compiled into minified JavaScript files during build time.

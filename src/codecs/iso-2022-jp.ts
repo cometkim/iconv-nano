@@ -6,18 +6,6 @@ import { isAsciiCodePoint } from "../utils/isAsciiCodePoint.js";
 
 type EncoderState = "ascii" | "roman" | "jis0208";
 
-let katakanaByIndex: string[] | undefined;
-
-const getKatakanaByIndex = (): Exclude<typeof katakanaByIndex, undefined> => {
-  if (katakanaByIndex === undefined) {
-    katakanaByIndex = [];
-    for (const [kana, index] of Object.entries(iso_2022_jp_katakana)) {
-      katakanaByIndex[index] = kana;
-    }
-  }
-  return katakanaByIndex;
-};
-
 const YEN_CODE_POINT = 0xa5; // ¥
 const OVERLINE_CODE_POINT = 0x203e; // ‾
 
@@ -103,7 +91,7 @@ const encode: Encoder = (input) => {
 
     // STEP_9
     if (/* ｡ */ 0xff61 <= codePoint && codePoint <= 0xff9f /* ﾟ */) {
-      codePoint = getKatakanaByIndex()[codePoint - 0xff61]!.codePointAt(0)!;
+      codePoint = iso_2022_jp_katakana[codePoint - 0xff61]!;
     }
 
     // STEP_10

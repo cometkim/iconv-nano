@@ -96,7 +96,10 @@ const main = async () => {
       });
 
       return [{ encoding, data: encodingIndex }];
-    } else if (encodingIndexArray.length === 128) {
+    } else if (
+      encodingIndexArray.length === 128 ||
+      encoding === "iso-2022-jp-katakana"
+    ) {
       return [
         {
           encoding,
