@@ -97,7 +97,14 @@ const main = async () => {
 
       return [{ encoding, data: encodingIndex }];
     } else if (encodingIndexArray.length === 128) {
-      return [{ encoding, data: encodingIndexArray }];
+      return [
+        {
+          encoding,
+          data: Array.from(encodingIndexArray, (v) =>
+            typeof v === "number" ? v : -1,
+          ),
+        },
+      ];
     }
 
     const encodingIndex = parseEncodingIndexArray(encodingIndexArray);
