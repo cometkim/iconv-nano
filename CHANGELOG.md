@@ -1,5 +1,17 @@
 # iconv-nano
 
+## 0.0.10
+
+### Patch Changes
+
+- [#17](https://github.com/jeremy-code/iconv-nano/pull/17) [`9ab65b8`](https://github.com/jeremy-code/iconv-nano/commit/9ab65b8278db2a1863dd6b499d27d972551e2ac8) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: switch to compact array format for single-byte encodings
+
+  - Reduces bundle size by 15.68 kB
+  - Improves performance substantially by using runtime index keyed by code point
+    instead of string (goes from throughput of min. 10000 to min. 60000 in CI)
+
+- [#17](https://github.com/jeremy-code/iconv-nano/pull/17) [`040fd6d`](https://github.com/jeremy-code/iconv-nano/commit/040fd6d91f03fa76a4a3c1c1b2fed694ba656387) Thanks [@jeremy-code](https://github.com/jeremy-code)! - perf: update iso-2022-jp-katakana encoding to use compact numeric array
+
 ## 0.0.9
 
 ### Patch Changes
