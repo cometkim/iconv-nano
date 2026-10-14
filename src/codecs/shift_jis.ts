@@ -1,7 +1,12 @@
-import shift_jis from "../../encodings/shift_jis.json" with { type: "json" };
+import { PAYLOAD } from "../../encodings/shift_jis.js";
 import type { Encoder, Decoder } from "../interfaces.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
 import { isAsciiCodePoint } from "../utils/isAsciiCodePoint.js";
+import { decodeVlqRunsLookup } from "../utils/vlqRuns.js";
+
+// Code point -> pointer lookup over columnar runs of the Shift_JIS reverse index,
+// decoded once on module load (see `encodeVlqRunsPayload` in `scripts/generate-encodings.ts`)
+const lookupShiftJisCodePoint = decodeVlqRunsLookup(PAYLOAD);
 
 // https://encoding.spec.whatwg.org/#shift_jis-encoder
 const encode: Encoder = (input) => {
@@ -23,10 +28,10 @@ const encode: Encoder = (input) => {
       buf[byteOffset] = codePoint - 0xff61 + 0xa1;
       byteOffset++;
     } else {
-      const pointer = (shift_jis as Record<string, number>)[
-        codePoint === 0x2212 /* − */ ? "\uff0d" /* － */ : char
-      ];
-      if (pointer === undefined) {
+      const pointer = lookupShiftJisCodePoint(
+        codePoint === 0x2212 /* − */ ? 0xff0d /* － */ : codePoint,
+      );
+      if (pointer === null) {
         buf[byteOffset] = 0x3f; // ?
         byteOffset++;
         continue;

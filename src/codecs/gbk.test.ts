@@ -1,7 +1,20 @@
 import { describe, expect, it } from "vitest";
 
-import gb18030_encoding from "../../encodings/gb18030.json" with { type: "json" };
+import { PAYLOAD } from "../../encodings/gb18030.js";
+import { decodeVlqRuns } from "../utils/vlqRuns.js";
 import * as gbk from "./gbk.js";
+
+// Every character covered by the GB 18030 index, rebuilt from columnar runs
+const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
+const gb18030_index = cpStarts
+  .reduce((chars, cpStart, i) => {
+    const count = counts[i]!;
+    for (let cp = cpStart; cp < cpStart + count; cp++) {
+      chars.push(String.fromCodePoint(cp));
+    }
+    return chars;
+  }, [] as string[])
+  .join("");
 
 describe("gb18030", () => {
   describe("encode", () => {
@@ -30,7 +43,7 @@ describe("gb18030", () => {
         ASCII: Array.from({ length: 0x7f }, (_, i) =>
           String.fromCharCode(i),
         ).join(""),
-        "GB 18030": Object.keys(gb18030_encoding).join(""),
+        "GB 18030": gb18030_index,
       }),
     )("%s", ([, input]) => {
       const encodedInput = gbk.encode(input);

@@ -1,8 +1,24 @@
 import { describe, expect, it } from "vitest";
 
 import iso_2022_jp_katakana from "../../encodings/iso-2022-jp-katakana.json" with { type: "json" };
-import jis0208 from "../../encodings/jis0208.json" with { type: "json" };
+import { PAYLOAD } from "../../encodings/jis0208.js";
+import { decodeVlqRuns } from "../utils/vlqRuns.js";
 import * as iso_2022_jp from "./iso-2022-jp.js";
+
+// Every [character, pointer] pair covered by the JIS0208 index, rebuilt from columnar runs
+const jis0208_entries: [string, number][] = [];
+{
+  const { cpStarts, ptrStarts, counts } = decodeVlqRuns(PAYLOAD);
+  for (let i = 0; i < cpStarts.length; i++) {
+    for (
+      let cp = cpStarts[i]!, pointer = ptrStarts[i]!;
+      cp < cpStarts[i]! + counts[i]!;
+      cp++, pointer++
+    ) {
+      jis0208_entries.push([String.fromCodePoint(cp), pointer]);
+    }
+  }
+}
 
 const textEncoder = new TextEncoder();
 
@@ -114,7 +130,7 @@ describe("ISO-2022-JP", () => {
       });
 
       it("uses the correct leading and trailing bytes for every pointer", () => {
-        for (const [char, pointer] of Object.entries(jis0208)) {
+        for (const [char, pointer] of jis0208_entries) {
           const leading = Math.floor(pointer / 94) + 0x21;
           const trailing = (pointer % 94) + 0x21;
 
@@ -444,7 +460,7 @@ describe("ISO-2022-JP", () => {
     });
 
     it("JIS0208 index", async () => {
-      const input = Object.keys(jis0208).join("");
+      const input = jis0208_entries.map(([char]) => char).join("");
       const encodedInput = iso_2022_jp.encode(input);
 
       // I believe this bug is related to a Chromium bug involving ISO-2022-JP

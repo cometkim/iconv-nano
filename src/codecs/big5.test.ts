@@ -1,7 +1,20 @@
 import { describe, expect, it } from "vitest";
 
-import big5_encoding from "../../encodings/big5.json" with { type: "json" };
+import { PAYLOAD } from "../../encodings/big5.js";
+import { decodeVlqRuns } from "../utils/vlqRuns.js";
 import * as big5 from "./big5.js";
+
+// Every character covered by the Big5 index, rebuilt from columnar runs
+const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
+const big5_index = cpStarts
+  .reduce((chars, cpStart, i) => {
+    const count = counts[i]!;
+    for (let cp = cpStart; cp < cpStart + count; cp++) {
+      chars.push(String.fromCodePoint(cp));
+    }
+    return chars;
+  }, [] as string[])
+  .join("");
 
 describe("Big5", () => {
   describe("encode", () => {
@@ -36,7 +49,7 @@ describe("Big5", () => {
         ASCII: Array.from({ length: 0x7f }, (_, i) =>
           String.fromCharCode(i),
         ).join(""),
-        "Big5 index": Object.keys(big5_encoding).join(""),
+        "Big5 index": big5_index,
       }),
     )("%s", ([, input]) => {
       const encodedInput = big5.encode(input);

@@ -1,8 +1,13 @@
 import iso_2022_jp_katakana from "../../encodings/iso-2022-jp-katakana.json" with { type: "json" };
-import jis0208 from "../../encodings/jis0208.json" with { type: "json" };
+import { PAYLOAD } from "../../encodings/jis0208.js";
 import type { Encoder, Decoder } from "../interfaces.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
 import { isAsciiCodePoint } from "../utils/isAsciiCodePoint.js";
+import { decodeVlqRunsLookup } from "../utils/vlqRuns.js";
+
+// Code point -> pointer lookup over columnar runs of the JIS0208 reverse index,
+// decoded once on module load (see `encodeVlqRunsPayload` in `scripts/generate-encodings.ts`)
+const lookupJis0208CodePoint = decodeVlqRunsLookup(PAYLOAD);
 
 type EncoderState = "ascii" | "roman" | "jis0208";
 
@@ -95,12 +100,10 @@ const encode: Encoder = (input) => {
     }
 
     // STEP_10
-    const pointer = (jis0208 as Record<string, number>)[
-      String.fromCodePoint(codePoint)
-    ];
+    const pointer = lookupJis0208CodePoint(codePoint);
 
     // STEP_11
-    if (pointer === undefined) {
+    if (pointer === null) {
       if (encoderState === "jis0208") {
         index -= codePointWidth;
         encoderState = "ascii";
