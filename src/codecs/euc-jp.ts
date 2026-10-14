@@ -1,7 +1,12 @@
-import jis0208 from "../../encodings/jis0208.json" with { type: "json" };
+import { PAYLOAD } from "../../encodings/jis0208.js";
 import type { Encoder, Decoder } from "../interfaces.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
 import { isAsciiCodePoint } from "../utils/isAsciiCodePoint.js";
+import { decodeVlqRunsLookup } from "../utils/vlqRuns.js";
+
+// Code point -> pointer lookup over columnar runs of the JIS0208 reverse index,
+// decoded once on module load (see `encodeVlqRunsPayload` in `scripts/generate-encodings.ts`)
+const lookupJis0208CodePoint = decodeVlqRunsLookup(PAYLOAD);
 
 // https://encoding.spec.whatwg.org/#euc-jp-encoder
 const encode: Encoder = (input) => {
@@ -24,10 +29,10 @@ const encode: Encoder = (input) => {
       buf[byteOffset + 1] = codePoint - 0xff61 + 0xa1;
       byteOffset += 2;
     } else {
-      const pointer = (jis0208 as Record<string, number>)[
-        codePoint === 0x2212 /* − */ ? "\uff0d" /* － */ : char
-      ];
-      if (pointer === undefined) {
+      const pointer = lookupJis0208CodePoint(
+        codePoint === 0x2212 /* − */ ? 0xff0d /* － */ : codePoint,
+      );
+      if (pointer === null) {
         buf[byteOffset] = 0x3f; // ?
         byteOffset++;
         continue;

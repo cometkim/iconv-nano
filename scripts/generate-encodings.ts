@@ -22,9 +22,6 @@ const parseEncodingIndexArray = (encodingIndexArray: Indexes[keyof Indexes]) =>
     return acc;
   }, {});
 
-// Reverse indexes stored as VLQ-encoded run-length payloads (decoded at runtime by `src/utils/vlqRuns.ts`)
-const VLQ_RUNS_ENCODINGS = new Set(["euc-kr"]);
-
 const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 const encodeVlq = (n: number): string => {
@@ -95,7 +92,7 @@ const serializeEncodingData = (
   data: Record<string, number> | unknown[],
 ): { fileName: string; source: string } => {
   const parsed = !Array.isArray(data);
-  if (parsed && VLQ_RUNS_ENCODINGS.has(encoding)) {
+  if (parsed) {
     return {
       fileName: `${encoding}.ts`,
       source:
@@ -219,11 +216,12 @@ const main = async () => {
         join(ENCODINGS_DIR, fileName),
         (
           await format(
-            fileName, 
+            fileName,
             source,
             // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- oxfmtConfig is a FormatConfig
             oxfmtConfig as FormatConfig,
-          )).code,
+          )
+        ).code,
         { encoding: "utf-8" },
       );
     }),

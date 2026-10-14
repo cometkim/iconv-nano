@@ -68,12 +68,17 @@ type VlqRunsTable = {
   table: Uint16Array;
 };
 
+// Blocks cover the full Unicode code point range: some indexes (big5) map astral code points
+// See https://encoding.spec.whatwg.org/#index-big5-pointer
+const BLOCK_COUNT = (0x10ffff >> 8) + 1;
+const BLOCK_SIZE = 256;
+
 // Builds an ICU-style two-stage table:
 // O(1) lookups costing ~0.1 ms of build time and 512 B per used 256-code-point block.
 // WHATWG index pointers stay below 0xffff, so it doubles as the unmapped sentinel.
 const buildVlqRunsTable = (runs: VlqRuns): VlqRunsTable => {
   const { cpStarts, ptrStarts, counts } = runs;
-  const present = new Uint8Array(256);
+  const present = new Uint8Array(BLOCK_COUNT);
   for (let i = 0; i < cpStarts.length; i++) {
     const firstBlock = cpStarts[i]! >> 8;
     const lastBlock = (cpStarts[i]! + counts[i]! - 1) >> 8;
@@ -81,14 +86,14 @@ const buildVlqRunsTable = (runs: VlqRuns): VlqRunsTable => {
       present[block] = 1;
     }
   }
-  const blockIds = new Int32Array(256).fill(-1);
+  const blockIds = new Int32Array(BLOCK_COUNT).fill(-1);
   let usedBlocks = 0;
-  for (let block = 0; block < 256; block++) {
+  for (let block = 0; block < BLOCK_COUNT; block++) {
     if (present[block] === 1) {
       blockIds[block] = usedBlocks++;
     }
   }
-  const table = new Uint16Array(usedBlocks * 256).fill(0xffff);
+  const table = new Uint16Array(usedBlocks * BLOCK_SIZE).fill(0xffff);
   for (let i = 0; i < cpStarts.length; i++) {
     const cpStart = cpStarts[i]!;
     const pointerStart = ptrStarts[i]!;
@@ -114,7 +119,7 @@ type VlqRunsLookup = (codePoint: number) => number | null;
 const decodeVlqRunsLookup = (payload: VlqRunsPayload): VlqRunsLookup => {
   const { blockIds, table } = buildVlqRunsTable(decodeVlqRuns(payload));
   return (codePoint) => {
-    if (codePoint > 0xffff) {
+    if (codePoint > 0x10ffff) {
       return null;
     }
     const block = blockIds[codePoint >> 8]!;

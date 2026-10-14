@@ -1,7 +1,20 @@
 import { describe, expect, it } from "vitest";
 
-import jis0208_encoding from "../../encodings/jis0208.json" with { type: "json" };
+import { PAYLOAD } from "../../encodings/jis0208.js";
+import { decodeVlqRuns } from "../utils/vlqRuns.js";
 import * as euc_jp from "./euc-jp.js";
+
+// Every character covered by the JIS0208 index, rebuilt from columnar runs
+const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
+const jis0208_index = cpStarts
+  .reduce((chars, cpStart, i) => {
+    const count = counts[i]!;
+    for (let cp = cpStart; cp < cpStart + count; cp++) {
+      chars.push(String.fromCodePoint(cp));
+    }
+    return chars;
+  }, [] as string[])
+  .join("");
 
 describe("EUC-JP", () => {
   describe("encode", () => {
@@ -66,7 +79,7 @@ describe("EUC-JP", () => {
         "half-width kana": Array.from({ length: 0xff9f - 0xff61 }, (_, i) =>
           String.fromCharCode(i + 0xff61),
         ).join(""),
-        "JIS0208 index": Object.keys(jis0208_encoding).join(""),
+        "JIS0208 index": jis0208_index,
       }),
     )("%s", ([, input]) => {
       const encodedInput = euc_jp.encode(input);

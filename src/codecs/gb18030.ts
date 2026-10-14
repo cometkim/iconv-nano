@@ -1,8 +1,13 @@
 import gb18030_ranges from "../../encodings/gb18030-ranges.json" with { type: "json" };
-import gb18030 from "../../encodings/gb18030.json" with { type: "json" };
+import { PAYLOAD } from "../../encodings/gb18030.js";
 import type { Encoder, Decoder, EncodeOptions } from "../interfaces.js";
 import { getCachedTextDecoder } from "../utils/getCachedTextDecoder.js";
 import { isAsciiCodePoint } from "../utils/isAsciiCodePoint.js";
+import { decodeVlqRunsLookup } from "../utils/vlqRuns.js";
+
+// Code point -> pointer lookup over columnar runs of the GB 18030 reverse index,
+// decoded once on module load (see `encodeVlqRunsPayload` in `scripts/generate-encodings.ts`)
+const lookupGb18030CodePoint = decodeVlqRunsLookup(PAYLOAD);
 
 const TABLE: Record<number, [number, number]> = {
   0xe78d: [0xa6, 0xd9],
@@ -78,9 +83,9 @@ const encode: Encoder<EncodeOptions & { isGBK?: boolean }> = (
       buf.set(TABLE[codePoint]!, byteOffset);
       byteOffset += 2;
     } else {
-      let pointer = (gb18030 as Record<string, number>)[char];
+      let pointer = lookupGb18030CodePoint(codePoint);
 
-      if (pointer !== undefined) {
+      if (pointer !== null) {
         const leading = Math.floor(pointer / 190) + 0x81;
         const trailing = pointer % 190;
         const offset = trailing < 0x3f ? 0x40 : 0x41;

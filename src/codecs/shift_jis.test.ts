@@ -1,7 +1,20 @@
 import { describe, expect, it } from "vitest";
 
-import shift_js_encoding from "../../encodings/shift_jis.json" with { type: "json" };
+import { PAYLOAD } from "../../encodings/shift_jis.js";
+import { decodeVlqRuns } from "../utils/vlqRuns.js";
 import * as shift_jis from "./shift_jis.js";
+
+// Every character covered by the Shift_JIS index, rebuilt from columnar runs
+const { cpStarts, counts } = decodeVlqRuns(PAYLOAD);
+const shift_jis_index = cpStarts
+  .reduce((chars, cpStart, i) => {
+    const count = counts[i]!;
+    for (let cp = cpStart; cp < cpStart + count; cp++) {
+      chars.push(String.fromCodePoint(cp));
+    }
+    return chars;
+  }, [] as string[])
+  .join("");
 
 describe("Shift_JIS", () => {
   describe("encode", () => {
@@ -67,7 +80,7 @@ describe("Shift_JIS", () => {
         "halfwidth katakana": Array.from({ length: 0xff9f - 0xff61 }, (_, i) =>
           String.fromCharCode(i + 0xff61),
         ).join(""),
-        "Shift_JIS index": Object.keys(shift_js_encoding).join(""),
+        "Shift_JIS index": shift_jis_index,
       }),
     )("%s", ([, input]) => {
       const encodedInput = shift_jis.encode(input);
